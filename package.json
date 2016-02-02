@@ -25,7 +25,8 @@
   },
   "files": [
     "lib",
-    "vendor"
+    "vendor/install.sh",
+    "vendor/.mecabrc"
   ],
   "homepage": "nodaguti/word-quiz-generator",
   "keywords": [
