@@ -1,0 +1,51 @@
+{
+  "name": "word-quiz-generator",
+  "description": "Easy-to-use Word Quiz Generator",
+  "version": "0.1.0",
+  "author": "nodaguti",
+  "bin": "lib/cli.js",
+  "bugs": "https://github.com/nodaguti/word-quiz-generator/issues",
+  "dependencies": {
+    "colors": "^1.1.2",
+    "csv": "^0.4.6",
+    "fs-extra-promise": "^0.3.1",
+    "lodash": "^4.0.0",
+    "minimist": "^1.2.0",
+    "shell-quote": "^1.4.3",
+    "source-map-support": "^0.4.0",
+    "treetagger": "^0.1.1"
+  },
+  "devDependencies": {
+    "babel-core": "^6.4.5",
+    "babel-eslint": "^5.0.0-beta6",
+    "babel-plugin-transform-async-to-generator": "^6.4.6",
+    "babel-preset-es2015": "^6.3.13",
+    "eslint": "^1.10.3",
+    "eslint-config-airbnb": "^3.1.0"
+  },
+  "files": [
+    "lib",
+    "vendor"
+  ],
+  "homepage": "nodaguti/word-quiz-generator",
+  "keywords": [
+    "education",
+    "exam",
+    "generator",
+    "quiz",
+    "test"
+  ],
+  "license": {
+    "type": "MIT",
+    "url": "http://nodaguti.mit-license.org/"
+  },
+  "main": "index.js",
+  "repository": "nodaguti/word-quiz-generator",
+  "scripts": {
+    "build": "babel src --out-dir lib --source-maps",
+    "postinstall": "vendor/install.sh",
+    "prepublish": "npm run --if-present build",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "babel src --out-dir lib --watch --source-maps"
+  }
+}
