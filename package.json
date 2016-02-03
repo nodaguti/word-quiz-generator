@@ -44,7 +44,7 @@
   "repository": "nodaguti/word-quiz-generator",
   "scripts": {
     "build": "babel src --out-dir lib --source-maps",
-    "postinstall": "vendor/install.sh",
+    "vendor": "vendor/install.sh",
     "prepublish": "npm run --if-present build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "babel src --out-dir lib --watch --source-maps"

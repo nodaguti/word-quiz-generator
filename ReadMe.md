@@ -5,6 +5,8 @@
 ## Install
 ```sh
 $ npm install -g word-quiz-generator
+$ word-quiz-generator install TreeTagger  # deps for English word quiz
+$ word-quiz-generator install MeCab # deps for Japanese word quiz
 ```
 
 ## Usage
