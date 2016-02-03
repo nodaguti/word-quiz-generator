@@ -40,11 +40,10 @@
     "type": "MIT",
     "url": "http://nodaguti.mit-license.org/"
   },
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": "nodaguti/word-quiz-generator",
   "scripts": {
     "build": "babel src --out-dir lib --source-maps",
-    "vendor": "vendor/install.sh",
     "prepublish": "npm run --if-present build",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "babel src --out-dir lib --watch --source-maps"
