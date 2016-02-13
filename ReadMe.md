@@ -11,16 +11,12 @@ $ word-quiz-generator install MeCab # deps for Japanese word quiz
 
 ## Usage
 ```sh
-$ word-quiz-generator preprocess \
+$ word-quiz-generator make \
   --src=/path/to/source-texts \
-  --dist=/path/to/preprocessed-texts
-$ word-quiz-generator lemmatize \
-  --src=/path/to/preprocessed-texts \
-  --dist/path/to/lemmatized-texts
+  --lang=english
 $ word-quiz-generator generate \
   --phrases=/path/to/phrase-list.csv \
-  --texts=/path/to/preprocessed-texts \
-  --lemmatized=/path/to/lemmatized-texts \
+  --sources=/path/to/source-texts \
   --scope=1-10 \
   --size=10
 ```
