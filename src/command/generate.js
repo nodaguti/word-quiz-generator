@@ -1,16 +1,13 @@
 /* eslint-disable no-console */
 import minimist from 'minimist';
 import colors from 'colors';
-import { fetchFileList, loadPhraseList } from '../utils.js';
 import QuizGenerator from '../quiz-generator.js';
-import Source from '../model/source.js';
 
 export default async function (args) {
   const argv = minimist(args, {
     string: [
       'phrases',
-      'texts',
-      'lemmatized',
+      'sources',
       'scope',
       'size',
       'instruction',
@@ -31,54 +28,41 @@ export default async function (args) {
       S: 'size',
     },
     default: {
-      'instruction': 'Write down the meaning of underlined words/phrases.',
-      'wordRegExp': '[\\w\'-]+',  // need for display
+      instruction: 'Write down the meaning of underlined words/phrases.',
+      wordRegExp: '[\\w\'-]+',  // need for display
     },
   });
 
-  const phraseList = await loadPhraseList(argv.phrases);
-  const texts = await fetchFileList(argv.texts, /\.txt$/);
-  const lemmatized = await fetchFileList(argv.lemmatized, /\.txt$/);
-
-  if (texts.length !== lemmatized.length) {
-    console.error(`The number of files in the 'texts' dir and the 'lemmatized' dir are not identical. Please make sure you ran a preprocessor and lemmatizer successfully.`);
-    process.exit(1);
-  }
-
-  const sources = texts.map((text, i) => {
-    return new Source({
-      original: text,
-      lemmatized: lemmatized[i],
-    });
+  const phrases = argv.phrases;
+  const sources = argv.sources;
+  const sentenceSeparator =
+    argv.sentenceSeparator && new RegExp(argv.sentenceSeparator, 'g');
+  const clauseRegExp =
+    argv.clauseRegExp && new RegExp(argv.clauseRegExp, 'g');
+  const wordRegExp =
+    argv.wordRegExp && new RegExp(argv.wordRegExp, 'g');
+  const wordBoundaryRegExp =
+    argv.wordBoundaryRegExp && new RegExp(argv.wordBoundaryRegExp);
+  const abbrRegExp =
+    argv.abbrRegExp && new RegExp(argv.abbrRegExp, 'g');
+  const generator = new QuizGenerator({
+    phrases, sources, sentenceSeparator, clauseRegExp, wordRegExp,
+    wordBoundaryRegExp, abbrRegExp,
   });
+  await generator.init();
+
   const scope = argv.scope;
   const size = Number(argv.size);
-  const generator = new QuizGenerator({
-    phraseList,
-    sources,
-    sentenceSeparator:
-      argv.sentenceSeparator && new RegExp(argv.sentenceSeparator, 'g'),
-    clauseRegExp:
-      argv.clauseRegExp && new RegExp(argv.clauseRegExp, 'g'),
-    wordRegExp:
-      argv.wordRegExp && new RegExp(argv.wordRegExp, 'g'),
-    wordBoundaryRegExp:
-      argv.wordBoundaryRegExp && new RegExp(argv.wordBoundaryRegExp),
-    abbrRegExp:
-      argv.abbrRegExp && new RegExp(argv.abbrRegExp, 'g'),
-  });
   const questions = await generator.quiz({ scope, size });
-  const wordRegExp = new RegExp(`(${argv.wordRegExp})(\\s+)?`, 'g');
-
-  console.log(questions);
 
   console.log(colors.bold(argv.instruction));
   questions.forEach((q, i) => {
+    const blockRegExp = new RegExp(`(${argv.wordRegExp})(\\s+)?`, 'g');
     let currentWordIndex = 0;
 
     console.log(
       `(${i + 1})\t` +
-      q.sentence.replace(wordRegExp, (block, word, space = '') => {
+      q.sentence.replace(blockRegExp, (block, word, space = '') => {
         if (q.wordIndexes[0] === currentWordIndex) {
           q.wordIndexes.shift();
           currentWordIndex++;

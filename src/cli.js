@@ -20,6 +20,7 @@ import { fetchFileList } from './utils.js';
     }
   } else {
     console.log('usage: word-quiz-generator <command> [<args>]');
-    console.log('available commands: ' + commands.join(', '));
+    console.log(`available commands: ${commands.join(', ')}`);
+    console.log('See \'--help\' of each commands for more details.');
   }
 })();

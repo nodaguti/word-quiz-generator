@@ -1,18 +1,21 @@
-import fs from 'fs-extra-promise';
 import _ from 'lodash';
-import Question from './model/question.js';
-import { parseSource } from './utils.js';
+import Source from './source.js';
+import {
+  fetchFileList,
+  loadPhraseCSV,
+} from './utils.js';
 
 /**
  * Generate a quiz (a set of questions)
  * randomly selecting some phrases from a given Phrase list
  * and randomly selecting question sources from a given Source list.
+ * NOTE: You have to run `init()` before using any other methods!
  */
 export default class QuizGenerator {
 
   /**
-   * @param {Array<Phrase>} phraseList
-   * @param {Array<Source>} sources
+   * @param {string} phrases Path to a CSV-formatted phrase list file.
+   * @param {string} sources Pathes to source text files or directries.
    * @param {RegExp} [sentenceSeparator]
    * @param {RegExp} [clauseRegExp]
    * @param {RegExp} [wordRegExp]
@@ -20,7 +23,7 @@ export default class QuizGenerator {
    * @param {RegExp} [abbrRegExp]
    */
   constructor({
-    phraseList,
+    phrases,
     sources,
     sentenceSeparator = /(?:[?!.]\s?)+"?(?:\s|$)(?!,)/g,
     clauseRegExp = /[^,:"?!.]+/g,
@@ -28,13 +31,22 @@ export default class QuizGenerator {
     wordBoundaryRegExp = /\b/,
     abbrRegExp = /\.\.\./g,
   }) {
-    this._phraseList = phraseList;
+    this._phrases = phrases;
     this._sources = sources;
     this._sentenceSeparator = sentenceSeparator;
     this._clauseRegExp = clauseRegExp;
     this._wordRegExp = wordRegExp;
     this._wordBoundaryRegExp = wordBoundaryRegExp;
     this._abbrRegExp = abbrRegExp;
+  }
+
+  /**
+   * Load and parse the files of phrases and sources.
+   */
+  async init() {
+    this._phrases = await loadPhraseCSV(this._phrases);
+    this._sources = await fetchFileList(this._sources, /\.txt$/);
+    this._sources = this._sources.map((path) => new Source(path));
   }
 
   /**
@@ -47,9 +59,9 @@ export default class QuizGenerator {
    */
   async quiz({ scope, size }) {
     const [min = 0, max] = scope.split('-').map((num) => Number(num));
-    const phrasesToTest = _.shuffle(this._phraseList.filter((phrase) => {
-      return _.inRange(phrase.section, min, (max || min) + 1);
-    }));
+    const phrasesToTest = _.shuffle(this._phrases.filter((phrase) =>
+      _.inRange(phrase.section, min, (max || min) + 1)
+    ));
     const quiz = [];
 
     while (quiz.length < size && phrasesToTest.length > 0) {
@@ -74,29 +86,23 @@ export default class QuizGenerator {
 
     while (sources.length > 0) {
       const src = sources.pop();
-      const {
-        sentenceIndex,
-        wordIndexes,
-        reference,
-      } = await this.selectSentence({
-        phrase: phrase.phrase,
-        src: src.lemmatized,
-      });
+      const { sentenceIndex, wordIndexes }
+        = await this.selectSentence({ phrase: phrase.phrase, src });
 
       if (sentenceIndex !== undefined) {
-        const content = await fs.readFileAsync(src.original, 'utf8');
-        const { text } = parseSource(content);
+        const text = await src.preprocessed.getText();
+        const reference = await src.preprocessed.getReference();
         const sentence = this.getSentenceAt({ index: sentenceIndex, text });
 
         if (!sentence) {
           continue;
         }
 
-        return new Question({
+        return {
           phrase: phrase.phrase,
           answer: phrase.answer,
           sentence, wordIndexes, reference,
-        });
+        };
       }
     }
 
@@ -135,11 +141,10 @@ export default class QuizGenerator {
    * Generate a question from a given phrase and source.
    * @param {string} phrase The phrase to find.
    * @param {string} src Path to the source text.
-   * @return {{ sentenceIndex: number, wordIndexes: Array<number>, reference: string }}
+   * @return {{ sentenceIndex: number, wordIndexes: Array<number> }}
    */
   async selectSentence({ phrase, src }) {
-    const content = await fs.readFileAsync(src, 'utf8');
-    const { reference, text } = parseSource(content);
+    const text = await src.lemmatized.getText();
     const phraseRegExp = new RegExp(
       `${this._wordBoundaryRegExp.source}(` +
         phrase.replace(
@@ -185,11 +190,10 @@ export default class QuizGenerator {
       const words = _.flatten(
         phrase
           .split('|')
-          .map((exp) => {
-            return exp
-              .replace(this._abbrRegExp, '')
-              .match(this._wordRegExp) || [];
-          })
+          .map((exp) =>
+            exp.replace(this._abbrRegExp, '')
+              .match(this._wordRegExp) || []
+          )
       );
       const wordsRegExp = new RegExp(
         '(?:' +
@@ -219,6 +223,6 @@ export default class QuizGenerator {
       return matched;
     });
 
-    return { reference, sentenceIndex, wordIndexes };
+    return { sentenceIndex, wordIndexes };
   }
 }

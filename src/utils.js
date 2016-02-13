@@ -2,7 +2,6 @@ import fs from 'fs-extra-promise';
 import csv from 'csv';
 import path from 'path';
 import flatten from 'lodash/flatten';
-import Phrase from './model/phrase.js';
 
 /**
  * Load a phrase list CSV file
@@ -10,13 +9,13 @@ import Phrase from './model/phrase.js';
  * @param {string} csvPath Path to a CSV file.
  * @return {Promise<Array<Phrase>>}
  */
-export const loadPhraseList = (csvPath) => {
-  return new Promise((resolve, reject) => {
+export const loadPhraseCSV = (csvPath) =>
+  new Promise((resolve, reject) => {
     const input = fs.createReadStream(csvPath);
     const parser = csv.parse();
     const transformer = csv.transform((record) => {
       const [section, phrase, answer] = record;
-      return phrase ? new Phrase({ section, phrase, answer }) : null;
+      return phrase ? { section, phrase, answer } : null;
     });
     const phraseList = [];
 
@@ -26,23 +25,6 @@ export const loadPhraseList = (csvPath) => {
       .on('end', () => resolve(phraseList))
       .on('error', (err) => reject(err));
   });
-};
-
-/**
- * Parse the content of a source file
- * (i.e. text which is to be a source when generating a quiz)
- * to separate a reference data from a text.
- * @param {string} content a content of a text file.
- * @return {{reference: string, text: string}}
- */
-export const parseSource = (content) => {
-  const chunks = content.split(/[\n\r]+/);
-
-  return {
-    reference: chunks.shift(),
-    text: chunks.filter((line) => !/^\s*$/.test(line)).join('\n'),
-  };
-};
 
 /**
  * Fetch a list of all the files and directories
@@ -51,8 +33,8 @@ export const parseSource = (content) => {
  * @param {RegExp} [pattern = /(?:)/] filtering regular expression
  * @return {Promise<Array<string>>}
  */
-export const fetchFileList = (paths, pattern = /(?:)/) => {
-  return Promise.all(
+export const fetchFileList = (paths, pattern = /(?:)/) =>
+  Promise.all(
     paths.split(',').map((p) => (async () => {
       const ap = path.resolve(p);
       const stat = await fs.statAsync(ap);
@@ -72,4 +54,3 @@ export const fetchFileList = (paths, pattern = /(?:)/) => {
       return result;
     })())
   ).then((lists) => flatten(lists));
-};

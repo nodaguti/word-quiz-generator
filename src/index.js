@@ -1,5 +1,5 @@
 import QuizGenerator from './quiz-generator.js';
-import models from './model/index';
+import Source from './source.js';
 import preprocessors from './preprocessor/index';
 import lemmatizers from './lemmatizer/index';
 import utils from './utils.js';
@@ -7,7 +7,7 @@ import utils from './utils.js';
 export default QuizGenerator;
 
 export {
-  models,
+  Source,
   preprocessors,
   lemmatizers,
   utils,
