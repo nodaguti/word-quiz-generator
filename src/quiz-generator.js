@@ -51,14 +51,14 @@ export default class QuizGenerator {
 
   /**
    * Generate a quiz.
-   * @param {string} scope "-" separated string
-   *                       representing a scope of the quiz.
-   *                       e.g. 5-10
+   * @param {string} sections "-" separated string
+   *                          representing a scope of the quiz.
+   *                          e.g. 5-10
    * @param {number} size # of questions in the quiz.
    * @return {Array<Question>} Generated quiz.
    */
-  async quiz({ scope, size }) {
-    const [min = 0, max] = scope.split('-').map((num) => Number(num));
+  async quiz({ sections, size }) {
+    const [min = 0, max] = sections.split('-').map((num) => Number(num));
     const phrasesToTest = _.shuffle(this._phrases.filter((phrase) =>
       _.inRange(phrase.section, min, (max || min) + 1)
     ));

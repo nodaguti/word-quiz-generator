@@ -8,7 +8,7 @@ export default async function (args) {
     string: [
       'material',
       'sources',
-      'scope',
+      'sections',
       'size',
       'instruction',
       'sentenceSeparator',
@@ -24,7 +24,7 @@ export default async function (args) {
       m: 'material',
       t: 'texts',
       l: 'lemmatized',
-      s: 'scope',
+      s: 'sections',
       S: 'size',
     },
     default: {
@@ -51,9 +51,9 @@ export default async function (args) {
   });
   await generator.init();
 
-  const scope = argv.scope;
+  const sections = argv.sections;
   const size = Number(argv.size);
-  const questions = await generator.quiz({ scope, size });
+  const questions = await generator.quiz({ sections, size });
 
   console.log(colors.bold(argv.instruction));
   questions.forEach((q, i) => {
