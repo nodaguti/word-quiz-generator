@@ -4,14 +4,14 @@ import path from 'path';
 import flatten from 'lodash/flatten';
 
 /**
- * Load a phrase list CSV file
+ * Parse a material (CSV-formatted phrase list)
  * and return an array of Phrase object.
  * @param {string} csvPath Path to a CSV file.
  * @return {Promise<Array<Phrase>>}
  */
-export const loadPhraseCSV = (csvPath) =>
+export const parseMaterial = (materialPath) =>
   new Promise((resolve, reject) => {
-    const input = fs.createReadStream(csvPath);
+    const input = fs.createReadStream(materialPath);
     const parser = csv.parse();
     const transformer = csv.transform((record) => {
       const [section, phrase, answer] = record;

@@ -2,19 +2,19 @@ import _ from 'lodash';
 import Source from './source.js';
 import {
   fetchFileList,
-  loadPhraseCSV,
+  parseMaterial,
 } from './utils.js';
 
 /**
  * Generate a quiz (a set of questions)
- * randomly selecting some phrases from a given Phrase list
- * and randomly selecting question sources from a given Source list.
+ * randomly selecting some phrases from the given material file
+ * and randomly selecting question sources from the given sources.
  * NOTE: You have to run `init()` before using any other methods!
  */
 export default class QuizGenerator {
 
   /**
-   * @param {string} phrases Path to a CSV-formatted phrase list file.
+   * @param {string} material Path to a CSV-formatted material file.
    * @param {string} sources Pathes to source text files or directries.
    * @param {RegExp} [sentenceSeparator]
    * @param {RegExp} [clauseRegExp]
@@ -23,7 +23,7 @@ export default class QuizGenerator {
    * @param {RegExp} [abbrRegExp]
    */
   constructor({
-    phrases,
+    material,
     sources,
     sentenceSeparator = /(?:[?!.]\s?)+"?(?:\s|$)(?!,)/g,
     clauseRegExp = /[^,:"?!.]+/g,
@@ -31,7 +31,7 @@ export default class QuizGenerator {
     wordBoundaryRegExp = /\b/,
     abbrRegExp = /\.\.\./g,
   }) {
-    this._phrases = phrases;
+    this._material = material;
     this._sources = sources;
     this._sentenceSeparator = sentenceSeparator;
     this._clauseRegExp = clauseRegExp;
@@ -44,7 +44,7 @@ export default class QuizGenerator {
    * Load and parse the files of phrases and sources.
    */
   async init() {
-    this._phrases = await loadPhraseCSV(this._phrases);
+    this._phrases = await parseMaterial(this._material);
     this._sources = await fetchFileList(this._sources, /\.txt$/);
     this._sources = this._sources.map((path) => new Source(path));
   }

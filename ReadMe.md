@@ -15,7 +15,7 @@ $ word-quiz-generator make \
   --src=/path/to/source-texts \
   --lang=english
 $ word-quiz-generator generate \
-  --phrases=/path/to/phrase-list.csv \
+  --material=/path/to/phrase-list.csv \
   --sources=/path/to/source-texts \
   --scope=1-10 \
   --size=10

@@ -6,7 +6,7 @@ import QuizGenerator from '../quiz-generator.js';
 export default async function (args) {
   const argv = minimist(args, {
     string: [
-      'phrases',
+      'material',
       'sources',
       'scope',
       'size',
@@ -21,7 +21,7 @@ export default async function (args) {
       'skip-spaces',
     ],
     alias: {
-      p: 'phrases',
+      m: 'material',
       t: 'texts',
       l: 'lemmatized',
       s: 'scope',
@@ -33,7 +33,7 @@ export default async function (args) {
     },
   });
 
-  const phrases = argv.phrases;
+  const material = argv.material;
   const sources = argv.sources;
   const sentenceSeparator =
     argv.sentenceSeparator && new RegExp(argv.sentenceSeparator, 'g');
@@ -46,7 +46,7 @@ export default async function (args) {
   const abbrRegExp =
     argv.abbrRegExp && new RegExp(argv.abbrRegExp, 'g');
   const generator = new QuizGenerator({
-    phrases, sources, sentenceSeparator, clauseRegExp, wordRegExp,
+    material, sources, sentenceSeparator, clauseRegExp, wordRegExp,
     wordBoundaryRegExp, abbrRegExp,
   });
   await generator.init();
