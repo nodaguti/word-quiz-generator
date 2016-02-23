@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /**
  * Lemmatizer for English using TreeTagger
  */
@@ -85,7 +86,7 @@ export default function (text) {
                 // and doesn't spaced between the previous word
                 // so that a word count will not be differed
                 // among a source and lemmatized texts.
-                lemma = '\'' + parsed.l;
+                lemma = `'${parsed.l}`;
                 shouldSpaced = false;
               } else {
                 lemma = parsed.l || parsed.t;

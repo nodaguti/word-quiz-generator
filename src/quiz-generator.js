@@ -206,16 +206,6 @@ export default class QuizGenerator {
         const inlineLeft = block.substring(0, offset2);
         const inlineIndex = (inlineLeft.match(this._wordRegExp) || []).length;
         wordIndexes.push(indexOffset + inlineIndex);
-        console.log({
-          sentence,
-          phrase,
-          left,
-          indexOffset,
-          block,
-          word,
-          inlineLeft,
-          inlineIndex,
-        });
 
         return word;
       });
