@@ -13,7 +13,7 @@ $ word-quiz-generator install MeCab # deps for Japanese word quiz
 ```sh
 $ word-quiz-generator make \
   --src=/path/to/source-texts \
-  --lang=english
+  --lang=en
 $ word-quiz-generator generate \
   --material=/path/to/phrase-list.csv \
   --sources=/path/to/source-texts \
