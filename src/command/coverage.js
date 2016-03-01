@@ -6,16 +6,14 @@ import QuizGenerator from '../quiz-generator.js';
 
 const showUsage = () => {
   console.log(
-`USAGE
-word-quiz-generator coverage --help
+`word-quiz-generator coverage --help
 word-quiz-generator coverage --material=<path> --sources=<paths> [--show-uncovered] [--sentenceSeparator=<RegExp>] [--clauseRegExp=<RegExp>] [--wordRegExp=<RegExp>] [--wordBoundaryRegExp=<RegExp>] [--abbrRegExp=<RegExp>]
 Measure the coverage of words/phrases in the given material against the given sources.
 
 -h, --help: Show this usage.
 -m, --material=<path>: Path to a material.
 -s, --sources=<paths>: Comma-separated path strings to sources.
--u, --show-uncovered: Show uncovered words/phrases.
-`);
+-u, --show-uncovered: Show uncovered words/phrases.`);
 };
 
 export default async function (args) {
