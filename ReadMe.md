@@ -1,5 +1,7 @@
 # Word Quiz Generator
 
+![screenshot.png](screenshot.png)
+
 A tool for generating a vocabulary quiz.
 
 Unlike existing generators, Word Quiz Generator produces "Write the definition" questions by extracting a sentence that contains a specific word/phrase from given source texts.
