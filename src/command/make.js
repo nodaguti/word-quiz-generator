@@ -8,14 +8,22 @@ const showUsage = () => {
   console.log(
 `word-quiz-generator make --help
 word-quiz-generator make --src=<path> --lang=<lang>
-ord-quiz-generator make --src=<path> [--preprocessor=<path>] [--lemmatizer=<path>]
+word-quiz-generator make --src=<path> [--preprocessor=<path>] [--lemmatizer=<path>]
+
 Generate preprocessed and lemmatized texts from the given sources.
 
--h, --help: Show this usage.
--s, --src=<paths>: Comma-separated path strings to be processed.
--l, --lang=<lang>: IETF langage tag in which source texts are written. This determines which built-in preprocesser and lemmatizer should be used. If you want to use your custom ones, please use '--preprocessor' and '--lemmatizer' options.
---preprocessor=<path>: Path to a custom preprocessor.
---lemmatizer=<path>: Path to a custom lemmatizer.`);
+-h, --help
+    Show this usage.
+-s, --src=<paths>
+    Comma-separated path strings to be processed.
+-l, --lang=<lang>
+    IETF langage tag in which source texts are written.
+    This determines which built-in preprocesser and lemmatizer should be used.
+    If you want to use your custom ones, please use '--preprocessor' and '--lemmatizer' options.
+--preprocessor=<path>
+  Path to a custom preprocessor.
+--lemmatizer=<path>
+  Path to a custom lemmatizer.`);
 };
 
 const getPreprocessor = (argv) => {

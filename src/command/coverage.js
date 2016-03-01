@@ -7,23 +7,35 @@ import QuizGenerator from '../quiz-generator.js';
 const showUsage = () => {
   console.log(
 `word-quiz-generator coverage --help
-word-quiz-generator coverage --material=<path> --sources=<paths> [--show-uncovered] [--sentenceSeparator=<RegExp>] [--clauseRegExp=<RegExp>] [--wordRegExp=<RegExp>] [--wordBoundaryRegExp=<RegExp>] [--abbrRegExp=<RegExp>]
+word-quiz-generator coverage --material=<path> --sources=<paths> [--show-uncovered]
+                             [--sentenceSeparator=<RegExp>] [--clauseRegExp=<RegExp>]
+                             [--wordRegExp=<RegExp>] [--wordBoundaryRegExp=<RegExp>]
+                             [--abbrRegExp=<RegExp>]
+
 Measure the coverage of words/phrases in the given material against the given sources.
 
--h, --help: Show this usage.
--m, --material=<path>: Path to a material.
--s, --sources=<paths>: Comma-separated path strings to sources.
--u, --show-uncovered: Show uncovered words/phrases.
+-h, --help
+    Show this usage.
+-m, --material=<path>
+    Path to a material.
+-s, --sources=<paths>
+    Comma-separated path strings to sources.
+-u, --show-uncovered
+    Show uncovered words/phrases.
 
 The following options determines how to extract a word/phrase or sentence from a text.
 For English sources, these are automatically set and usually don't need to override them.
 
---sentenceSeparator=<RegExp>: Regular expression representing a sentence separator. Default: '(?:[?!.]\\s?)+"?(?:\\s|$)(?!,)'
---clauseRegExp=<RegExp>: Regular expression representing a clause. Default: '[^,:"?!.]+'
---wordRegExp=<RegExp>: Regular expression representing a word. Default: '[\\w'-]+'
---wordBoundaryRegExp=<RegExp>: Regular expression representing a word boundary. Default: '\\b'
---abbrRegExp=<RegExp>: Regular expression representing an abbreviation mark. Default: '\\.\\.\\.'
-`);
+--sentenceSeparator=<RegExp>
+    Regular expression representing a sentence separator. Default: '(?:[?!.]\\s?)+"?(?:\\s|$)(?!,)'
+--clauseRegExp=<RegExp>
+    Regular expression representing a clause. Default: '[^,:"?!.]+'
+--wordRegExp=<RegExp>
+    Regular expression representing a word. Default: '[\\w'-]+'
+--wordBoundaryRegExp=<RegExp>
+    Regular expression representing a word boundary. Default: '\\b'
+--abbrRegExp=<RegExp>
+    Regular expression representing an abbreviation mark. Default: '\\.\\.\\.'`);
 };
 
 export default async function (args) {

@@ -6,26 +6,42 @@ import QuizGenerator from '../quiz-generator.js';
 const showUsage = () => {
   console.log(
 `word-quiz-generator generate --help
-word-quiz-generator generate --material=<path> --sources=<paths> --sections --size [--instruction] [--sentenceSeparator=<RegExp>] [--clauseRegExp=<RegExp>] [--wordRegExp=<RegExp>] [--wordBoundaryRegExp=<RegExp>] [--abbrRegExp=<RegExp>]
+word-quiz-generator generate --material=<path> --sources=<paths> --sections --size
+                             [--instruction] [--sentenceSeparator=<RegExp>]
+                             [--clauseRegExp=<RegExp>] [--wordRegExp=<RegExp>]
+                             [--wordBoundaryRegExp=<RegExp>] [--abbrRegExp=<RegExp>]
+
 Generate a quiz and put it to stdout using the given material and sources.
 
--h, --help: Show this usage.
--m, --material=<path>: Path to a material.
--s, --sources=<paths>: Comma-separated path strings to sources.
--e, --sections=<sections>: Quiz coverage. e.g. '1-10', '5', '3-'
--i, --size=<num>: The number of questions.
---instruction: The instruction text located at top of the quiz. Default: 'Write down the meaning of underlined words/phrases.'
---skip-spaces: Specify if a language you want to make a quiz has no word divider, such as Japanese and Chinese.
+-h, --help
+    Show this usage.
+-m, --material=<path>
+    Path to a material.
+-s, --sources=<paths>
+    Comma-separated path strings to sources.
+-e, --sections=<sections>
+    Quiz coverage. e.g. '1-10', '5', '3-'
+-i, --size=<num>
+    The number of questions.
+--instruction
+    The instruction text located at top of the quiz.
+    Default: 'Write down the meaning of underlined words/phrases.'
+--skip-spaces
+    Specify if a language you want to make a quiz has no word divider, such as Japanese and Chinese.
 
 The following options determines how to extract a word/phrase or sentence from a text.
 For English quiz, these are automatically set and usually don't need to override them.
 
---sentenceSeparator=<RegExp>: Regular expression representing a sentence separator. Default: '(?:[?!.]\\s?)+"?(?:\\s|$)(?!,)'
---clauseRegExp=<RegExp>: Regular expression representing a clause. Default: '[^,:"?!.]+'
---wordRegExp=<RegExp>: Regular expression representing a word. Default: '[\\w'-]+'
---wordBoundaryRegExp=<RegExp>: Regular expression representing a word boundary. Default: '\\b'
---abbrRegExp=<RegExp>: Regular expression representing an abbreviation mark. Default: '\\.\\.\\.'
-`);
+--sentenceSeparator=<RegExp>
+    Regular expression representing a sentence separator. Default: '(?:[?!.]\\s?)+"?(?:\\s|$)(?!,)'
+--clauseRegExp=<RegExp>
+    Regular expression representing a clause. Default: '[^,:"?!.]+'
+--wordRegExp=<RegExp>
+    Regular expression representing a word. Default: '[\\w'-]+'
+--wordBoundaryRegExp=<RegExp>
+    Regular expression representing a word boundary. Default: '\\b'
+--abbrRegExp=<RegExp>
+    Regular expression representing an abbreviation mark. Default: '\\.\\.\\.'`);
 };
 
 export default async function (args) {
