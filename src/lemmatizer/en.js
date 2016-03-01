@@ -21,10 +21,12 @@ export default function (text) {
 
       const sentence = results.map((parsed, i) => {
         // Get a context around the processing word.
-        const getPart = () =>
-          (results[i - 1] ? results[i - 1].t : '') + ' ' +
-          parsed.t + ' ' +
-          (results[i + 1] ? results[i + 1].t : '');
+        const getPart = () => {
+          const prev = results[i - 1] ? results[i - 1].t : '';
+          const next = results[i + 1] ? results[i + 1].t : '';
+
+          return `${prev} ${parsed.t} ${next}`;
+        };
 
         let shouldSpaced = true;
         let lemma;

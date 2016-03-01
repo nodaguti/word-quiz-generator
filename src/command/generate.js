@@ -107,35 +107,44 @@ export default async function (args) {
   const questions = await generator.quiz({ sections, size });
 
   console.log(colors.bold(argv.instruction));
-  questions.forEach((q, i) => {
+  questions.forEach((question, i) => {
+    const sentenceParts = [];
     const blockRegExp = new RegExp(`(${argv.wordRegExp})(\\s+)?`, 'g');
+    const { sentence, wordIndexes } = question;
+    const divider = argv['skip-spaces'] ? '' : ' ';
     let currentWordIndex = 0;
+    let prevLastIndex = 0;
+    let matched;
 
-    console.log(
-      `(${i + 1})\t` +
-      q.sentence.replace(blockRegExp, (block, word, space = '') => {
-        if (q.wordIndexes[0] === currentWordIndex) {
-          q.wordIndexes.shift();
-          currentWordIndex++;
+    // Set underlines at target expressions.
+    // eslint-disable-next-line no-cond-assign
+    while ((matched = blockRegExp.exec(sentence))) {
+      const [, word, hasDivider] = matched;
+      const divider_ = !!hasDivider ? divider : '';
+      const punctuation = sentence.substring(prevLastIndex, matched.index);
 
-          if (argv['skip-spaces']) {
-            return colors.underline(word);
-          }
+      if (wordIndexes[0] === currentWordIndex) {
+        const isSuccessive = (wordIndexes[0] + 1) === wordIndexes[1];
 
-          if (
-            q.wordIndexes[0] && q.wordIndexes[0] === currentWordIndex
-          ) {
-            return colors.underline(block);
-          }
-
-          return colors.underline(word) + space;
+        if (isSuccessive) {
+          sentenceParts.push(`${punctuation}${colors.underline(`${word}${divider_}`)}`);
+        } else {
+          sentenceParts.push(`${punctuation}${colors.underline(word)}${divider_}`);
         }
 
-        currentWordIndex++;
-        return argv['skip-spaces'] ? word : block;
-      }) +
-      `\t(${q.reference})`
-    );
+        wordIndexes.shift();
+      } else {
+        sentenceParts.push(`${punctuation}${word}${divider_}`);
+      }
+
+      currentWordIndex++;
+      prevLastIndex = blockRegExp.lastIndex;
+    }
+
+    const stopPunctuation = sentence.substring(prevLastIndex);
+    sentenceParts.push(stopPunctuation);
+
+    console.log(`(${i + 1})\t${sentenceParts.join('')}\t(${question.reference})`);
   });
 
   console.log(colors.bold('\nAnswer Keys'));

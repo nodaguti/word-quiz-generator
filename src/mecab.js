@@ -13,7 +13,8 @@ export default class MeCab {
   }
 
   _getCommandStr(text) {
-    return sq.quote(['echo', text]) + ' | ' + this._command;
+    const echoCommand = sq.quote(['echo', text]);
+    return `${echoCommand} | ${this._command}`;
   }
 
   /**

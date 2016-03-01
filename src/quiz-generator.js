@@ -145,13 +145,13 @@ export default class QuizGenerator {
    */
   async selectSentence({ phrase, src }) {
     const text = await src.lemmatized.getText();
+    const phraseWithAbbrRegExp = phrase.replace(
+      this._abbrRegExp,
+      `?(?:${this._clauseRegExp.source})?`
+    );
+    const wordBoundaryRegExp = this._wordBoundaryRegExp.source;
     const phraseRegExp = new RegExp(
-      `${this._wordBoundaryRegExp.source}(` +
-        phrase.replace(
-          this._abbrRegExp,
-          `?(?:${this._clauseRegExp.source})?`
-        ) +
-      `)${this._wordBoundaryRegExp.source}`,
+      `${wordBoundaryRegExp}(${phraseWithAbbrRegExp})${wordBoundaryRegExp}`,
       'gi'
     );
     const matches = [];
@@ -195,12 +195,8 @@ export default class QuizGenerator {
               .match(this._wordRegExp) || []
           )
       );
-      const wordsRegExp = new RegExp(
-        '(?:' +
-          words.map((word) => word.replace(/\W/g, '\\$&')).join('|') +
-        ')',
-        'gi'
-      );
+      const escapedWords = words.map((word) => word.replace(/\W/g, '\\$&')).join('|');
+      const wordsRegExp = new RegExp(`(?:${escapedWords})`, 'gi');
 
       block.replace(wordsRegExp, (word, offset2) => {
         const inlineLeft = block.substring(0, offset2);
