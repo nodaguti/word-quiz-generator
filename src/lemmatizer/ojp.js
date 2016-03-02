@@ -3,32 +3,34 @@
  */
 import MeCab from '../mecab.js';
 import path from 'path';
-import _ from 'lodash';
 
 const MECAB_WORD = 0;
 const MECAB_LEMMA = 13;
 const mecabHome = path.join(__dirname, '..', '..', 'vendor', 'mecab');
 const mecabPath = path.join(mecabHome, 'mecab', 'bin', 'mecab');
-const rcPath = path.join(mecabHome, 'unidic-cj', '.mecabrc-cj');
+const rcPath = path.join(mecabHome, 'unidic-ojp', '.mecabrc-ojp');
 const mecab = new MeCab({ command: `${mecabPath} --rcfile=${rcPath}` });
 
 export default async function (text) {
-  const chunks = _.chunk(text.replace(/ /g, '').split(/\n/), 10);
+  const chunks = text.split(/\n/).map((block) => block.split(/。/));
   const lemmatizedChunks = [];
 
   for (const chunk of chunks) {
-    const lemmatized = await Promise.all(chunk.map((paragraph) =>
-      mecab.parse(paragraph).then((results) =>
-        results.map((parsed) =>
-          // '*' means there is no lemma data for this word.
-          parsed[MECAB_LEMMA] !== '*' ?
-            parsed[MECAB_LEMMA] :
-            parsed[MECAB_WORD]
-        ).join(' ')
-      )
-    )).then((results) => results.join('\n'));
+    const results = [];
 
-    lemmatizedChunks.push(lemmatized);
+    for (const sentence of chunk) {
+      const parsed = await mecab.parse(sentence);
+      const lemmatized = parsed.map((word) =>
+        // '*' means there is no lemma data for this word.
+        word[MECAB_LEMMA] !== '*' ?
+          word[MECAB_LEMMA] :
+          word[MECAB_WORD]
+      ).join(' ');
+
+      results.push(lemmatized);
+    }
+
+    lemmatizedChunks.push(results.join(' 。 '));
   }
 
   return lemmatizedChunks.join('\n');
