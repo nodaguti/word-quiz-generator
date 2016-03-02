@@ -45,7 +45,7 @@ export default async function (text) {
     .replace(/｢/g, '「')
     .replace(/｣/g, '」')
 
-    // Remove corner brackets to make a question sentence look nice.
+    // Remove cornered brackets to make a question sentence look nice.
     .replace(/「/g, '')
     .replace(/」/g, '')
     .replace(/『/g, '')

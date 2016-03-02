@@ -19,10 +19,14 @@
   "devDependencies": {
     "babel-core": "^6.4.5",
     "babel-eslint": "^5.0.0",
+    "babel-plugin-espower": "^2.1.2",
     "babel-plugin-transform-async-to-generator": "^6.4.6",
     "babel-preset-es2015": "^6.3.13",
+    "babel-register": "^6.6.0",
     "eslint": "^2.2.0",
-    "eslint-config-airbnb": "^6.0.2"
+    "eslint-config-airbnb": "^6.0.2",
+    "mocha": "^2.4.5",
+    "power-assert": "^1.2.0"
   },
   "files": [
     "lib",
@@ -47,7 +51,7 @@
   "scripts": {
     "build": "babel src --out-dir lib --source-maps",
     "prepublish": "npm run --if-present build",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --compilers js:babel-core/register test/**/*.js",
     "watch": "babel src --out-dir lib --watch --source-maps"
   }
 }

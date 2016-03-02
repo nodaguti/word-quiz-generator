@@ -38,7 +38,7 @@ export default class MeCab {
 
         const parsed = result.split('\n')
           .map((line) => line.replace(/\t/g, ',').split(','))
-          .filter((line) => line.length >= 9);
+          .filter((line) => line.length >= 6);
 
         resolve(parsed);
 

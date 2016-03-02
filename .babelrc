@@ -13,6 +13,7 @@
     "transform-es2015-typeof-symbol",
     "transform-es2015-unicode-regex",
 
-    "transform-async-to-generator"
+    "transform-async-to-generator",
+    "babel-plugin-espower"
   ]
 }
