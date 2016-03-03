@@ -1,7 +1,7 @@
 /* eslint-env mocha */
 
 import assert from 'power-assert';
-import preprocessor from '../../src/preprocessor/en.js';
+import preprocessor from '../../../src/preprocessor/en.js';
 
 describe('English preprocessor', () => {
   it('can remove unnecessary line breaks', async () => {

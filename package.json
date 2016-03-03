@@ -26,6 +26,7 @@
     "eslint": "^2.2.0",
     "eslint-config-airbnb": "^6.0.2",
     "mocha": "^2.4.5",
+    "npm-run-all": "^1.5.1",
     "power-assert": "^1.2.0"
   },
   "files": [
@@ -50,8 +51,9 @@
   "repository": "nodaguti/word-quiz-generator",
   "scripts": {
     "build": "babel src --out-dir lib --source-maps",
-    "prepublish": "npm run --if-present build",
     "test": "mocha --compilers js:babel-core/register test/unit/**/*.js",
-    "watch": "babel src --out-dir lib --watch --source-maps"
+    "lint": "eslint test src",
+    "watch": "babel src --out-dir lib --watch --source-maps",
+    "prepublish": "npm-run-all lint test build"
   }
 }

@@ -1,5 +1,5 @@
 import assert from 'power-assert';
-import preprocessor from '../../src/preprocessor/ojp.js';
+import preprocessor from '../../../src/preprocessor/ojp.js';
 
 describe('Old Japanese preprocessor', () => {
   it('can remove annotations', async () => {
