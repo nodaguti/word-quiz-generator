@@ -1,6 +1,7 @@
 /* eslint-disable no-console */
 import path from 'path';
 import minimist from 'minimist';
+import fs from 'fs-extra-promise';
 import Source from '../source.js';
 import { fetchFileList } from '../utils.js';
 
@@ -26,7 +27,7 @@ Generate preprocessed and lemmatized texts from the given sources.
   Path to a custom lemmatizer.`);
 };
 
-const getPreprocessor = (argv) => {
+function getPreprocessor(argv) {
   try {
     if (argv.preprocessor) {
       const preprocessor = require(argv.preprocessor);
@@ -39,9 +40,9 @@ const getPreprocessor = (argv) => {
   }
 
   return null;
-};
+}
 
-const getLemmatizer = (argv) => {
+function getLemmatizer(argv) {
   try {
     if (argv.lemmatizer) {
       const lemmatizer = require(argv.lemmatizer);
@@ -54,7 +55,15 @@ const getLemmatizer = (argv) => {
   }
 
   return null;
-};
+}
+
+async function clean(dir) {
+  const files = await fetchFileList(dir, /\.(?:preprocessed|lemmatized)$/);
+
+  for (const _path of files) {
+    await fs.removeAsync(_path);
+  }
+}
 
 export default async function (args) {
   const argv = minimist(args, {
@@ -90,6 +99,8 @@ export default async function (args) {
   }
 
   console.log(`Src: ${path.resolve(argv.src)}`);
+
+  await clean(argv.src);
 
   const preprocessor = getPreprocessor(argv);
   const lemmatizer = getLemmatizer(argv);
