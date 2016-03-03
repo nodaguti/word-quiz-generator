@@ -100,7 +100,7 @@ export default function (text) {
         return shouldSpaced ? ` ${lemma}` : lemma;
       }).join('');
 
-      resolve(sentence);
+      resolve(sentence.trim());
     });
   });
 }
