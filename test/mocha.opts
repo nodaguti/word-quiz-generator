@@ -1,3 +1,4 @@
 --recursive
 --reporter spec
+--timeout 100000
 test/unit

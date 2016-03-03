@@ -27,7 +27,7 @@ export default class QuizGenerator {
     sources,
     sentenceSeparator = /(?:[?!.]\s?)+"?(?:\s|$)(?!,)/g,
     clauseRegExp = /[^,:"?!.]+/g,
-    wordRegExp = /[\w'-]+/g,
+    wordRegExp = /[\w'\-\.]+/g,
     wordBoundaryRegExp = /\b/,
     abbrRegExp = /\.\.\./g,
   }) {
@@ -77,8 +77,8 @@ export default class QuizGenerator {
   }
 
   /**
-   * Generate a question from a given phrase.
-   * @param {Phrase} phrase
+   * Generate a question using the given phrase.
+   * @param {{phrase, answer, reference}} phrase
    * @return {Question}
    */
   async question(phrase) {
@@ -86,55 +86,45 @@ export default class QuizGenerator {
 
     while (sources.length > 0) {
       const src = sources.pop();
-      const { sentenceIndex, wordIndexes }
-        = await this.selectSentence({ phrase: phrase.phrase, src });
+      const question = this.getQuestionFromSource({ phrase, src });
 
-      if (sentenceIndex !== undefined) {
-        const text = await src.preprocessed.getText();
-        const reference = await src.preprocessed.getReference();
-        const sentence = this.getSentenceAt({ index: sentenceIndex, text });
-
-        if (!sentence) {
-          continue;
-        }
-
-        return {
-          phrase: phrase.phrase,
-          answer: phrase.answer,
-          sentence, wordIndexes, reference,
-        };
+      if (!question) {
+        continue;
       }
+
+      return question;
     }
 
     return null;
   }
 
   /**
-   * Get the 'index'-th sentence of the given text.
-   * @param {number} index
-   * @param {string} text
-   * @return {string}
+   * Generate a question using the given phrase and source.
+   * @param {{phrase, answer, reference}} phrase
+   * @param {Source} src
+   * @return {Question}
    */
-  getSentenceAt({ index, text }) {
-    const body = text.split(this._sentenceSeparator)[index];
+  async getQuestionFromSource({ phrase, src }) {
+    const { sentenceIndex, wordIndexes }
+      = await this.selectSentence({ phrase: phrase.phrase, src });
 
-    if (!body) {
-      return null;
+    if (sentenceIndex !== undefined) {
+      const text = await src.preprocessed.getText();
+      const reference = await src.preprocessed.getReference();
+      const sentence = this.getSentenceAt({ index: sentenceIndex, text });
+
+      if (!sentence) {
+        return null;
+      }
+
+      return {
+        phrase: phrase.phrase,
+        answer: phrase.answer,
+        sentence, wordIndexes, reference,
+      };
     }
 
-    const rightContext = (text.split(body)[1] || '').substring(0, 5).trim();
-    if (!rightContext) {
-      return body;
-    }
-
-    const endMarks = rightContext.match(this._sentenceSeparator);
-    if (!endMarks) {
-      return body;
-    }
-
-    const endMark = endMarks[0].trim();
-
-    return body + endMark;
+    return null;
   }
 
   /**
@@ -210,5 +200,33 @@ export default class QuizGenerator {
     });
 
     return { sentenceIndex, wordIndexes };
+  }
+
+  /**
+   * Get the 'index'-th sentence of the given text.
+   * @param {number} index
+   * @param {string} text
+   * @return {string}
+   */
+  getSentenceAt({ index, text }) {
+    const body = text.split(this._sentenceSeparator)[index];
+
+    if (!body) {
+      return null;
+    }
+
+    const rightContext = (text.split(body)[1] || '').substring(0, 5).trim();
+    if (!rightContext) {
+      return body;
+    }
+
+    const endMarks = rightContext.match(this._sentenceSeparator);
+    if (!endMarks) {
+      return body;
+    }
+
+    const endMark = endMarks[0].trim();
+
+    return body + endMark;
   }
 }

@@ -15,7 +15,7 @@ export const parseMaterial = (materialPath) =>
     const parser = csv.parse();
     const transformer = csv.transform((record) => {
       const [section, phrase, answer] = record;
-      return phrase ? { section, phrase, answer } : null;
+      return phrase ? { section: Number(section), phrase, answer } : null;
     });
     const phraseList = [];
 
