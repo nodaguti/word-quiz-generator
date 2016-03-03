@@ -14,6 +14,7 @@ const tagger = new TreeTagger();
 export default function (text) {
   return new Promise((resolve, reject) => {
     tagger.tag(text, (err, results) => {
+      /* istanbul ignore if */
       if (err) {
         reject(err);
         return;
@@ -33,6 +34,7 @@ export default function (text) {
 
         // Warn if an extra period is inserted
         // because it will affect the sentence separation process.
+        /* istanbul ignore if */
         if (!parsed.t.includes('.') && parsed.l.includes('.')) {
           console.warn('"." is added!:', getPart());
         }
@@ -43,8 +45,13 @@ export default function (text) {
         if (parsed.l === '<unknown>') {
           const isSign = /^\W+$/.test(parsed.t);
 
+          /* istanbul ignore if */
           if (isSign) {
-            console.log(parsed, `sign: ${isSign}, part: ${getPart()}`);
+            console.warn(
+              'Unknown sign is found!!: ',
+              parsed,
+              `sign: ${isSign}, part: ${getPart()}`
+            );
             lemma = '';
           } else {
             lemma = parsed.t;
