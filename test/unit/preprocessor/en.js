@@ -10,7 +10,7 @@ abc
 
 abc1
 abc`,
-      expect: 'abc abc abc1 abc',
+      expected: 'abc abc abc1 abc',
     });
   });
 
@@ -19,7 +19,7 @@ abc`,
       func: preprocessor,
       input: `hard-hyphen soft-
 hyphen soft- hyphen soft-  hyphen`,
-      expect: 'hard-hyphen softhyphen softhyphen softhyphen',
+      expected: 'hard-hyphen softhyphen softhyphen softhyphen',
     });
   });
 
@@ -27,7 +27,7 @@ hyphen soft- hyphen soft-  hyphen`,
     await assertOutput({
       func: preprocessor,
       input: "'’’'",
-      expect: "''''",
+      expected: "''''",
     });
   });
 
@@ -35,7 +35,7 @@ hyphen soft- hyphen soft-  hyphen`,
     await assertOutput({
       func: preprocessor,
       input: '"“”"',
-      expect: '""""',
+      expected: '""""',
     });
   });
 });

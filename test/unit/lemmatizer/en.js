@@ -8,7 +8,7 @@ describe('English lemmatizer', () => {
     await assertOutput({
       func: lemmatizer,
       input: 'There is two stores in this town.',
-      expect: 'there be two store in this town .',
+      expected: 'there be two store in this town .',
     });
   });
 
@@ -16,7 +16,7 @@ describe('English lemmatizer', () => {
     await assertOutput({
       func: lemmatizer,
       input: 'In 2010 the government had 636 trillion yen of government debt.',
-      expect: 'in 2010 the government have 636 trillion yen of government debt .',
+      expected: 'in 2010 the government have 636 trillion yen of government debt .',
     });
   });
 
@@ -24,7 +24,7 @@ describe('English lemmatizer', () => {
     await assertOutput({
       func: lemmatizer,
       input: 'Rumour says the teacher won 12,345 doller in the competition.',
-      expect: 'rumour say the teacher win 12,345 doller in the competition .',
+      expected: 'rumour say the teacher win 12,345 doller in the competition .',
     });
   });
 
@@ -32,7 +32,7 @@ describe('English lemmatizer', () => {
     await assertOutput({
       func: lemmatizer,
       input: 'Mr. Tanaka screamed.',
-      expect: 'Mr. Tanaka scream .',
+      expected: 'Mr. Tanaka scream .',
     });
   });
 
@@ -40,7 +40,7 @@ describe('English lemmatizer', () => {
     await assertOutput({
       func: lemmatizer,
       input: 'It is difficult that he made himself understood',
-      expect: 'one be difficult that one make oneself understand',
+      expected: 'one be difficult that one make oneself understand',
     });
   });
 
@@ -48,7 +48,7 @@ describe('English lemmatizer', () => {
     await assertOutput({
       func: lemmatizer,
       input: 'These are my car, his car, her car, our cars, your cars, their cars, its car, respectively.',
-      expect: "these be one's car , one's car , one's car , one's car , one's car , one's car , one's car , respectively .",
+      expected: "these be one's car , one's car , one's car , one's car , one's car , one's car , one's car , respectively .",
     });
   });
 
@@ -56,7 +56,7 @@ describe('English lemmatizer', () => {
     await assertOutput({
       func: lemmatizer,
       input: "Mike's car, people's market, geeks's computer",
-      expect: "one's car , one's market , one's computer",
+      expected: "one's car , one's market , one's computer",
     });
   });
 
@@ -64,7 +64,7 @@ describe('English lemmatizer', () => {
     await assertOutput({
       func: lemmatizer,
       input: "It's nice. He's good. He's been to London. I'll go. I'd like to eat.",
-      expect: "one'be nice . one'be good . one'have be to London . one'will go . one'will like to eat .",
+      expected: "one'be nice . one'be good . one'have be to London . one'will go . one'will like to eat .",
     });
   });
 
@@ -72,7 +72,7 @@ describe('English lemmatizer', () => {
     await assertOutput({
       func: lemmatizer,
       input: '"He is stupid," my uncle said, "and also very rude!"',
-      expect: '" one be stupid , " one\'s uncle say , " and also very rude ! "',
+      expected: '" one be stupid , " one\'s uncle say , " and also very rude ! "',
     });
   });
 });

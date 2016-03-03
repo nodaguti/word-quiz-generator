@@ -14,7 +14,7 @@ describe('Old Japanese preprocessor', () => {
 あ[い］う
 あ［い]う
 あ〔い〕う`,
-      expect: `あう
+      expected: `あう
 あう
 あう
 あう
@@ -30,7 +30,7 @@ describe('Old Japanese preprocessor', () => {
     await assertOutput({
       func: preprocessor,
       input: 'さゝみ、ひゞわれ',
-      expect: 'ささみ 、 ひびわれ',
+      expected: 'ささみ 、 ひびわれ',
     });
   });
 
@@ -38,7 +38,7 @@ describe('Old Japanese preprocessor', () => {
     await assertOutput({
       func: preprocessor,
       input: 'かみ／〃＼、かみ＼〃／、さら／＼、さら＼／。',
-      expect: 'かみがみ 、 かみがみ 、 さらさら 、 さらさら 。',
+      expected: 'かみがみ 、 かみがみ 、 さらさら 、 さらさら 。',
     });
   });
 
@@ -46,7 +46,7 @@ describe('Old Japanese preprocessor', () => {
     await assertOutput({
       func: preprocessor,
       input: '｢」「」『』｛｝',
-      expect: '',
+      expected: '',
     });
   });
 
@@ -54,7 +54,7 @@ describe('Old Japanese preprocessor', () => {
     await assertOutput({
       func: preprocessor,
       input: '　',
-      expect: '',
+      expected: '',
     });
   });
 });
