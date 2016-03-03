@@ -1,9 +1,11 @@
-import assert from 'power-assert';
-import preprocessor from '../../../src/preprocessor/ojp.js';
+import { assertOutput } from '../../utils';
+import preprocessor from '../../../src/preprocessor/ojp';
 
 describe('Old Japanese preprocessor', () => {
   it('can remove annotations', async () => {
-    const input = `あ（い）う
+    await assertOutput({
+      func: preprocessor,
+      input: `あ（い）う
 あ（い)う
 あ(い）う
 あ(い)う
@@ -11,8 +13,8 @@ describe('Old Japanese preprocessor', () => {
 あ［い］う
 あ[い］う
 あ［い]う
-あ〔い〕う`;
-    const expect = `あう
+あ〔い〕う`,
+      expect: `あう
 あう
 あう
 あう
@@ -20,33 +22,39 @@ describe('Old Japanese preprocessor', () => {
 あう
 あう
 あう
-あう`;
-    const output = await preprocessor(input);
-
-    assert(output === expect);
+あう`,
+    });
   });
 
   it('can un-odorijify simple repeat marks', async () => {
-    const input = 'さゝみ、ひゞわれ';
-    const expect = 'ささみ 、 ひびわれ';
-    const output = await preprocessor(input);
-
-    assert(output === expect);
+    await assertOutput({
+      func: preprocessor,
+      input: 'さゝみ、ひゞわれ',
+      expect: 'ささみ 、 ひびわれ',
+    });
   });
 
   it('can un-odorijify complex repeat marks', async () => {
-    const input = 'かみ／〃＼、かみ＼〃／、さら／＼、さら＼／。';
-    const expect = 'かみがみ 、 かみがみ 、 さらさら 、 さらさら 。';
-    const output = await preprocessor(input);
-
-    assert(output === expect);
+    await assertOutput({
+      func: preprocessor,
+      input: 'かみ／〃＼、かみ＼〃／、さら／＼、さら＼／。',
+      expect: 'かみがみ 、 かみがみ 、 さらさら 、 さらさら 。',
+    });
   });
 
   it('can remove cornered brackets', async () => {
-    const input = '｢」「」『』';
-    const expect = '';
-    const output = await preprocessor(input);
+    await assertOutput({
+      func: preprocessor,
+      input: '｢」「」『』',
+      expect: '',
+    });
+  });
 
-    assert(output === expect);
+  it('can remove full-width spaces', async () => {
+    await assertOutput({
+      func: preprocessor,
+      input: '　',
+      expect: '',
+    });
   });
 });
