@@ -43,7 +43,7 @@ word-quiz-generator generate --material=<path> --sources=<paths> --sections --si
 
   Comma-separated path strings to text files that will be used as a question sentence.
   A source file should have reference information as the first line and the rest of the file will be the body text.
-  See [Source] for more details.
+  See [Source](#source) for more details.
 
 - `--sections`
 
@@ -243,7 +243,7 @@ Nemo enim ipsam voluptatem, quia voluptas sit, aspernatur aut odit aut fugit, se
 
 Word Quiz Generator even works against plain text files, but preprocessing and lemmatizing an original text improve the quality of a generated quiz.
 
-The generator treats a file whose name ends `.preprocessed` as the preprocessed version text, and whose name ends `.lemmatized` as the lemmatized version text.
+The generator treats a file whose name ends `.preprocessed` at the same directory as the preprocessed version text, and whose name ends `.lemmatized` as the lemmatized version text.
 
 ```
 ~/sources/foo-bar.txt               # original
@@ -255,7 +255,7 @@ If preprocessed or lemmatized text is not found, then the generator uses the ori
 
 ### Preprocessing
 Preprocessed texts will be used in lemmatization and displaying a question. Preprocessing can enhance the accuracy on lemmatization and/or the readability of a question sentence.
-For the built-in English preprocessor, it includes removing unnecessary line breaks and soft hyphens.
+As for the built-in English preprocessor, for example, it includes removing unnecessary line breaks and soft hyphens.
 
 ### Lemmatizing/Lemmatization
 Lemmatized texts will be used in searching sentences.
@@ -265,18 +265,36 @@ For instance, imagine the generator is creating a question using 'go through'. I
 
 > Comets may **go through** a transition phase as they come close to extinction.
 
-(from "[Extinct comet](https://en.wikipedia.org/wiki/Extinct_comet)")
+(from Wikipedia, "[Extinct comet](https://en.wikipedia.org/wiki/Extinct_comet)")
 
 can be picked up by the generator, while
 
 > If another sailor **went through** the bag, the odds were high the thief would tie the bag back
 
-(from "[Thief knot](https://en.wikipedia.org/wiki/Thief_knot)")
+(from Wikipedia, "[Thief knot](https://en.wikipedia.org/wiki/Thief_knot)")
 
 will not.
 
 To make such sentences recognizable to the generator, the [lemmatisation](https://en.wikipedia.org/wiki/Lemmatisation) process is needed. It will replace each words with its lemma. Therefore the above sentence becomes
 
-> If another sailor **go** through the bag, the **odd** **be** high the thief **will** tie the bag back
+> if another sailor **go** through the bag, the **odd** **be** high the thief **will** tie the bag back
 
 and the generator is now able to know the sentence contains the phrase "go through".
+
+
+## License
+
+MIT License (http://nodaguti.mit-license.org/)
+
+## Acknowledgment
+
+- [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/), Helmut Schmid, [TreeTagger License](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/Tagger-Licence).
+  - Used for the lemmatizer of English.
+- [GNU Collaborative International Dictionary of English](http://gcide.gnu.org.ua/), GNU Dico, GNU General Public License.
+  - Used for the test data (materials) of English.
+- [Wikipedia](https://www.wikipedia.org/),  Creative Commons Attribution-ShareAlike 3.0 Unported License.
+  - Used for the test data (sources) of English.
+- [UniDic for Early Middle Japanese (中古和文UniDic)](http://www2.ninjal.ac.jp/lrc/index.php?UniDic%2F%C3%E6%B8%C5%CF%C2%CA%B8UniDic), Toshinobu Ogiso, [UniDic License](http://www2.ninjal.ac.jp/lrc/index.php?UniDic%2F%C3%E6%B8%C5%CF%C2%CA%B8UniDic#u7300511).
+  - Used for the preprocessor and lemmatizer of Old Japanese (ojp).
+- [Uji Shui Monogatari (宇治拾遺物語)](http://www2s.biglobe.ne.jp/~Taiju/1212_ujishui_01.htm), degitized by Taiju, retrieved from [日本古典文学テキスト](http://www2s.biglobe.ne.jp/~Taiju/classic.htm).
+  - Used for the test data (sources) of Old Japanese.
