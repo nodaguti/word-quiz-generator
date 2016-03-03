@@ -42,10 +42,10 @@ describe('Old Japanese preprocessor', () => {
     });
   });
 
-  it('can remove cornered brackets', async () => {
+  it('can remove brackets', async () => {
     await assertOutput({
       func: preprocessor,
-      input: '｢」「」『』',
+      input: '｢」「」『』｛｝',
       expect: '',
     });
   });

@@ -56,11 +56,13 @@ export default async function (text) {
     .replace(/｢/g, '「')
     .replace(/｣/g, '」')
 
-    // Remove cornered brackets to make a question sentence look nice.
+    // Remove brackets to make a question sentence tidy.
     .replace(/「/g, '')
     .replace(/」/g, '')
     .replace(/『/g, '')
     .replace(/』/g, '')
+    .replace(/｛/g, '')
+    .replace(/｝/g, '')
 
     // Remove full-width spaces
     // eslint-disable-next-line no-irregular-whitespace
