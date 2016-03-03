@@ -20,31 +20,21 @@ export default class MeCab {
   /**
    * Analyze a given text with MeCab.
    * @param {string} text a text string to be parsed.
-   * @param {Function} [callback] a callback function.
    * @return {Promise<Array<Array<string>>}
-   * @note The user can receive a result via a callback function
-   *       and a promise object.
    */
-  parse(text, callback) {
+  parse(text) {
     return new Promise((resolve, reject) => {
       exec(this._getCommandStr(text), (err, result) => {
+        /* istanbul ignore if */
         if (err) {
-          reject(err);
-          if (callback) {
-            callback(err);
-          }
-          return;
+          return reject(err);
         }
 
         const parsed = result.split('\n')
           .map((line) => line.replace(/\t/g, ',').split(','))
           .filter((line) => line.length >= 6);
 
-        resolve(parsed);
-
-        if (callback) {
-          callback(err, parsed);
-        }
+        return resolve(parsed);
       });
     });
   }
