@@ -1,43 +1,41 @@
-/* eslint-env mocha */
-
-import assert from 'power-assert';
+import { assertOutput } from '../../utils';
 import preprocessor from '../../../src/preprocessor/en.js';
 
 describe('English preprocessor', () => {
   it('can remove unnecessary line breaks', async () => {
-    const input = `abc
+    await assertOutput({
+      func: preprocessor,
+      input: `abc
 abc
 
 abc1
-abc`;
-    const expect = 'abc abc abc1 abc';
-    const output = await preprocessor(input);
-
-    assert(output === expect);
+abc`,
+      expect: 'abc abc abc1 abc',
+    });
   });
 
   it('can remove soft hyphens', async () => {
-    const input = `hard-hyphen soft-
-hyphen soft- hyphen soft-  hyphen`;
-    const expect = 'hard-hyphen softhyphen softhyphen softhyphen';
-    const output = await preprocessor(input);
-
-    assert(output === expect);
+    await assertOutput({
+      func: preprocessor,
+      input: `hard-hyphen soft-
+hyphen soft- hyphen soft-  hyphen`,
+      expect: 'hard-hyphen softhyphen softhyphen softhyphen',
+    });
   });
 
   it('can remove full-width apostrophes', async () => {
-    const input = "'’’'";
-    const expect = "''''";
-    const output = await preprocessor(input);
-
-    assert(output === expect);
+    await assertOutput({
+      func: preprocessor,
+      input: "'’’'",
+      expect: "''''",
+    });
   });
 
   it('can remove full-width quotation marks', async () => {
-    const input = '"“”"';
-    const expect = '""""';
-    const output = await preprocessor(input);
-
-    assert(output === expect);
+    await assertOutput({
+      func: preprocessor,
+      input: '"“”"',
+      expect: '""""',
+    });
   });
 });
