@@ -35,7 +35,7 @@
     "vendor/install.sh",
     "vendor/.mecabrc"
   ],
-  "homepage": "nodaguti/word-quiz-generator",
+  "homepage": "https://github.com/nodaguti/word-quiz-generator",
   "keywords": [
     "education",
     "exam",
@@ -44,10 +44,7 @@
     "test",
     "vocabulary"
   ],
-  "license": {
-    "type": "MIT",
-    "url": "http://nodaguti.mit-license.org/"
-  },
+  "license": "MIT",
   "main": "lib/index.js",
   "repository": "nodaguti/word-quiz-generator",
   "scripts": {
