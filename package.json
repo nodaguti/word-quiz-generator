@@ -49,10 +49,11 @@
   "repository": "nodaguti/word-quiz-generator",
   "scripts": {
     "build": "babel src --out-dir lib --source-maps",
-    "test": "mocha --compilers js:babel-core/register",
-    "cover": "$(npm bin)/babel-node $(npm bin)/isparta cover --report text node_modules/mocha/bin/_mocha -- --reporter dot",
+    "test": "npm-run-all lint test:cover",
+    "test:mocha": "mocha --compilers js:babel-core/register",
+    "test:cover": "$(npm bin)/babel-node $(npm bin)/isparta cover --report text node_modules/mocha/bin/_mocha",
     "lint": "eslint test src",
     "watch": "babel src --out-dir lib --watch --source-maps",
-    "prepublish": "npm-run-all lint test build"
+    "prepublish": "npm-run-all test build"
   }
 }
