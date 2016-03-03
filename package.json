@@ -51,7 +51,7 @@
   "scripts": {
     "build": "babel src --out-dir lib --source-maps",
     "prepublish": "npm run --if-present build",
-    "test": "mocha --compilers js:babel-core/register test/**/*.js",
+    "test": "mocha --compilers js:babel-core/register test/unit/**/*.js",
     "watch": "babel src --out-dir lib --watch --source-maps"
   }
 }

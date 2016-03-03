@@ -12,7 +12,10 @@ const rcPath = path.join(mecabHome, 'unidic-ojp', '.mecabrc-ojp');
 const mecab = new MeCab({ command: `${mecabPath} --rcfile=${rcPath}` });
 
 export default async function (text) {
-  const chunks = text.split(/\n/).map((block) => block.split(/。/));
+  const chunks = text
+    .replace(/ /g, '')
+    .split(/\n/)
+    .map((block) => block.split(/。/));
   const lemmatizedChunks = [];
 
   for (const chunk of chunks) {
