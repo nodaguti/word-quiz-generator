@@ -25,7 +25,7 @@ export default async function (text) {
       const parsed = await mecab.parse(sentence);
       const lemmatized = parsed.map((word) =>
         // '*' means there is no lemma data for this word.
-        word[MECAB_LEMMA] !== '*' ?
+        word[MECAB_LEMMA] && word[MECAB_LEMMA] !== '*' ?
           word[MECAB_LEMMA] :
           word[MECAB_WORD]
       ).join(' ');
