@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { assertOutput } from '../../_helpers';
-import lemmatizer from '../../../src/lemmatizer/en';
+import lemmatizer from '../../../src/lemmatizers/en';
 
 describe('English lemmatizer', () => {
   it('can get lemmas of words in a normal sentence', async () => {

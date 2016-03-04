@@ -1,5 +1,5 @@
 import { assertOutput } from '../../_helpers';
-import preprocessor from '../../../src/preprocessor/ojp';
+import preprocessor from '../../../src/preprocessors/ojp';
 
 const leftBrackets = {
   round: ['（', '('],

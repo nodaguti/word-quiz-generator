@@ -5,7 +5,7 @@ import _ from 'lodash';
 import { fetchFileList } from './utils.js';
 
 (async () => {
-  const ls = await fetchFileList(path.join(__dirname, 'command'), /\.js$/);
+  const ls = await fetchFileList(path.join(__dirname, 'commands'), /\.js$/);
   const commands = ls.map((p) => path.basename(p, '.js'));
   const cmdIdx = process.argv.findIndex((arg) => _.includes(commands, arg));
 
@@ -13,7 +13,7 @@ import { fetchFileList } from './utils.js';
     const command = process.argv[cmdIdx];
 
     try {
-      const func = require(`./command/${command}.js`).default;
+      const func = require(`./commands/${command}.js`).default;
       await func(process.argv.slice(cmdIdx + 1));
     } catch (err) {
       console.error(err.stack);

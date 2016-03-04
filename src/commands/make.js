@@ -33,7 +33,7 @@ function getPreprocessor(argv) {
       const preprocessor = require(argv.preprocessor);
       return preprocessor.default || preprocessor;
     } else if (argv.lang) {
-      return require(`../preprocessor/${argv.lang}.js`).default;
+      return require(`../preprocessors/${argv.lang}.js`).default;
     }
   } catch (err) {
     console.error('Unable to load the preprocessor: %c', err.message);
@@ -48,7 +48,7 @@ function getLemmatizer(argv) {
       const lemmatizer = require(argv.lemmatizer);
       return lemmatizer.default || lemmatizer;
     } else if (argv.lang) {
-      return require(`../lemmatizer/${argv.lang}.js`).default;
+      return require(`../lemmatizers/${argv.lang}.js`).default;
     }
   } catch (err) {
     console.error('Unable to load the lemmatizer: %c', err.message);

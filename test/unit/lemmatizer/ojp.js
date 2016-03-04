@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import { assertOutput } from '../../_helpers';
-import lemmatizer from '../../../src/lemmatizer/ojp';
+import lemmatizer from '../../../src/lemmatizers/ojp';
 
 describe('Old Japanese lemmatizer', () => {
   it('can get lemmas of words in normal sentences', async () => {
