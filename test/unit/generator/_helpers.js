@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import assert from 'power-assert';
 import _ from 'lodash';
 
@@ -30,29 +31,34 @@ export function testSelectSentence({
   sources,
   mapPhraseToSource,
 }) {
-  generator._phrases.forEach((phraseObj) => {
-    const phrase = phraseObj.phrase;
+  try {
+    generator._phrases.forEach((phraseObj) => {
+      const phrase = phraseObj.phrase;
+      const desc = phraseObj._[0];
 
-    describe(`can find and locate '${phrase}'`, () => {
-      Object.keys(sources).forEach((key) => {
-        const filename = key;
-        const sourceDesc = sources[key];
-        const expected = mapPhraseToSource[phrase][sourceDesc];
+      describe(`can find and locate '${phrase}' (${desc})`, () => {
+        Object.keys(sources).forEach((key) => {
+          const filename = key;
+          const sourceDesc = sources[key];
+          const expected = mapPhraseToSource[phrase][sourceDesc];
 
-        if (!expected) {
-          return;
-        }
+          if (!expected) {
+            return;
+          }
 
-        it(`in ${sourceDesc}`, async () => {
-          const src = generator._sources.find((source) => source.path.endsWith(filename));
-          const question = await generator.selectSentence({ phrase, src });
+          it(`in ${sourceDesc}`, async () => {
+            const src = generator._sources.find((source) => source.path.endsWith(filename));
+            const question = await generator.selectSentence({ phrase, src });
 
-          assert(question.sentenceIndex === expected.sentenceIndex);
-          assert(_.difference(question.wordIndexes, expected.wordIndexes).length === 0);
+            assert(question.sentenceIndex === expected.sentenceIndex);
+            assert(_.difference(question.wordIndexes, expected.wordIndexes).length === 0);
+          });
         });
       });
     });
-  });
+  } catch (err) {
+    console.error(err.stack);
+  }
 }
 
 export function testGetQuestionFromSource({
@@ -60,32 +66,37 @@ export function testGetQuestionFromSource({
   sources,
   mapPhraseToSource,
 }) {
-  generator._phrases.forEach((phraseObj) => {
-    const phrase = phraseObj.phrase;
+  try {
+    generator._phrases.forEach((phraseObj) => {
+      const phrase = phraseObj.phrase;
+      const desc = phraseObj._[0];
 
-    describe(`can generate a question using '${phrase}'`, () => {
-      Object.keys(sources).forEach((key) => {
-        const filename = key;
-        const sourceDesc = sources[key];
-        const expected = mapPhraseToSource[phrase][sourceDesc];
+      describe(`can generate a question using '${phrase}' (${desc})`, () => {
+        Object.keys(sources).forEach((key) => {
+          const filename = key;
+          const sourceDesc = sources[key];
+          const expected = mapPhraseToSource[phrase][sourceDesc];
 
-        if (!expected) {
-          return;
-        }
+          if (!expected) {
+            return;
+          }
 
-        it(`from ${filename}`, async () => {
-          const src = generator._sources.find((source) => source.path.endsWith(filename));
-          const question = await generator.getQuestionFromSource({ phrase: phraseObj, src });
-          const words = question.sentence.match(generator._wordRegExp);
+          it(`from ${filename}`, async () => {
+            const src = generator._sources.find((source) => source.path.endsWith(filename));
+            const question = await generator.getQuestionFromSource({ phrase: phraseObj, src });
+            const words = question.sentence.match(generator._wordRegExp);
 
-          assert(question.phrase === phraseObj.phrase);
-          assert(question.answer === phraseObj.answer);
+            assert(question.phrase === phraseObj.phrase);
+            assert(question.answer === phraseObj.answer);
 
-          question.wordIndexes.forEach((wordIndex, i) => {
-            assert(words[wordIndex] === expected.words[i]);
+            question.wordIndexes.forEach((wordIndex, i) => {
+              assert(words[wordIndex] === expected.words[i]);
+            });
           });
         });
       });
     });
-  });
+  } catch (err) {
+    console.error(err.stack);
+  }
 }

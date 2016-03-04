@@ -52,6 +52,20 @@ const mapPhraseToSource = {
       words: ['さる', 'べき', 'に', 'や', 'あり', 'けむ'],
     },
   },
+  殿下: {
+    'a complex sentence': {
+      sentenceIndex: 0,
+      wordIndexes: [0],
+      words: ['殿下'],
+    },
+  },
+  はるばる: {
+    'Izayoi Nikki (十六夜日記)': {
+      sentenceIndex: 31,
+      wordIndexes: [0],
+      words: ['はるばる'],
+    },
+  },
 };
 
 (async () => {

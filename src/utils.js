@@ -14,8 +14,8 @@ export const parseMaterial = (materialPath) =>
     const input = fs.createReadStream(materialPath);
     const parser = csv.parse();
     const transformer = csv.transform((record) => {
-      const [section, phrase, answer] = record;
-      return phrase ? { section: Number(section), phrase, answer } : null;
+      const [section, phrase, answer, ..._] = record;
+      return phrase ? { section: Number(section), phrase, answer, _ } : null;
     });
     const phraseList = [];
 

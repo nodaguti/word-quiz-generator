@@ -1,3 +1,4 @@
+import debug from 'debug';
 import _ from 'lodash';
 import RegExpPresets from './constants/regexp-presets';
 import Source from './source.js';
@@ -5,6 +6,8 @@ import {
   fetchFileList,
   parseMaterial,
 } from './utils.js';
+
+const log = debug('word-quiz-generator');
 
 /**
  * Generate a quiz (a set of questions)
@@ -92,6 +95,7 @@ export default class QuizGenerator {
       }
     }
 
+    log(quiz);
     return quiz;
   }
 
@@ -148,8 +152,8 @@ export default class QuizGenerator {
 
   /**
    * Generate a question from a given phrase and source.
-   * @param {string} phrase The phrase to find.
-   * @param {string} src Path to the source text.
+   * @param {string} phrase phrase to find.
+   * @param {Source} src
    * @return {{ sentenceIndex: number, wordIndexes: Array<number> }}
    */
   async selectSentence({ phrase, src }) {
@@ -179,7 +183,7 @@ export default class QuizGenerator {
     }
 
     const selected = _.sample(matches);
-    const leftText = text.substring(0, selected.offset);
+    const leftText = text.substring(0, selected.offset + 1);
     const leftSentences = leftText.match(this._sentenceSeparator) || [];
     const leftContext = _.last(
       leftText.split(this._sentenceSeparator)
@@ -191,6 +195,14 @@ export default class QuizGenerator {
     const sentence = leftContext + selected.matched + rightContext;
     const sentenceIndex = leftSentences.length;
     const wordIndexes = [];
+
+    log({
+      phrase,
+      src: src.path,
+      selected,
+      sentenceIndex,
+      sentence,
+    });
 
     sentence.replace(phraseRegExp, (matched, block, offset) => {
       const left = sentence.substring(0, offset);
