@@ -16,7 +16,7 @@ export default {
     sentenceSeparator: /(?:。|[\n\r]+|「|」|『|』)(?:\s+)?/g,
     clauseRegExp: /[^、。「」『』]+/g,
     wordRegExp: /\S+/g,
-    wordBoundaryRegExp: /\s/,
+    wordBoundaryRegExp: / /,
     abbrRegExp: /〜/g,
   },
 };

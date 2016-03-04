@@ -100,8 +100,8 @@ const mapPhraseToSource = {
     },
     'a complex sentence': {
       sentenceIndex: 3,
-      wordIndexes: [13, 14, 19, 20],
-      words: ["father's", 'name', "grandfather's", 'name'],
+      wordIndexes: [13, 14],
+      words: ["father's", 'name'],
     },
   },
   "one'be nice": {
@@ -141,14 +141,14 @@ const sourcePath = path.resolve(__dirname, '../../fixtures/sources/en/');
         '"I think," he said, "he doesn\'t trust anyone besides himself."',
         'On 26 April 1915, Smith, on his own initiative, recovered wounded soldiers while exposed to sustained fire and attended to them "with the greatest devotion to duty regardless of personal risk" (Issy Smith, Wikipedia).',
         'It was not hard for him to "talk me into changing my mind" (Nando Parrado, Wikipedia).',
-        'The full name is written as: First name (given name) followed by the father\'s name, and last by the grandfather\'s name (Patronymic, Wikipedia).',
+        'The full name is written as: First name (given name) followed by the father\'s name (Patronymic, Wikipedia).',
         '(Eh, Wikipedia) It is also commonly used as a question tag, i.e., method for inciting a reply, as in "It\'s nice here, eh?"',
       ];
       const lemmatized = [
         '" one think , " one say , " one do\'n\'t trust anyone besides oneself . "',
         'on 26 April 1915 , Smith , on one\'s own initiative , recover wounded soldier while expose to sustained fire and attend to one " with the great devotion to duty regardless of personal risk " ( Issy Smith , Wikipedia) .',
         'one be not hard for one to " talk one into change one\'s mind " ( Nando Parrado , Wikipedia) .',
-        'the full name be write as : first name ( give name ) follow by the one\'s name , and last by the one\'s name ( Patronymic , Wikipedia) .',
+        'the full name be write as : first name ( give name ) follow by the one\'s name ( Patronymic , Wikipedia) .',
         '( Eh , Wikipedia ) one be also commonly use as a question tag , i.e. , method for incite a reply , as in " one\'be nice here , eh ? "',
       ];
 

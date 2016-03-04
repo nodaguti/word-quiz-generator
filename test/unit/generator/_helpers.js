@@ -51,7 +51,7 @@ export function testSelectSentence({
             const question = await generator.selectSentence({ phrase, src });
 
             assert(question.sentenceIndex === expected.sentenceIndex);
-            assert(_.difference(question.wordIndexes, expected.wordIndexes).length === 0);
+            assert(_.xor(question.wordIndexes, expected.wordIndexes).length === 0);
           });
         });
       });

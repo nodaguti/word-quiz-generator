@@ -164,8 +164,8 @@ export default class QuizGenerator {
     );
     const wordBoundaryRegExp = this._wordBoundaryRegExp.source;
     const phraseRegExp = new RegExp(
-      `${wordBoundaryRegExp}(${phraseWithAbbrRegExp})${wordBoundaryRegExp}`,
-      'gi'
+      `(?:^|${wordBoundaryRegExp})(${phraseWithAbbrRegExp})${wordBoundaryRegExp}`,
+      'gim'
     );
     const matches = [];
 
@@ -178,12 +178,19 @@ export default class QuizGenerator {
       matches.push({ matched, block, offset, lastIndex });
     });
 
+    log({
+      phrase,
+      src: src.path,
+      phraseRegExp,
+      matches,
+    });
+
     if (!matches.length) {
       return {};
     }
 
     const selected = _.sample(matches);
-    const leftText = text.substring(0, selected.offset + 1);
+    const leftText = text.substring(0, selected.offset);
     const leftSentences = leftText.match(this._sentenceSeparator) || [];
     const leftContext = _.last(
       leftText.split(this._sentenceSeparator)

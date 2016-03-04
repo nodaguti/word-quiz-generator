@@ -52,11 +52,11 @@ const mapPhraseToSource = {
       words: ['さる', 'べき', 'に', 'や', 'あり', 'けむ'],
     },
   },
-  殿下: {
-    'a complex sentence': {
+  旅立ち: {
+    'Izayoi Nikki (十六夜日記)': {
       sentenceIndex: 0,
       wordIndexes: [0],
-      words: ['殿下'],
+      words: ['旅立ち'],
     },
   },
   はるばる: {
