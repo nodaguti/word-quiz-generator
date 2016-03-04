@@ -7,10 +7,10 @@ import QuizGenerator from '../quiz-generator.js';
 const showUsage = () => {
   console.log(
 `word-quiz-generator coverage --help
-word-quiz-generator coverage --material=<path> --sources=<paths> [--show-uncovered]
-                             [--sentenceSeparator=<RegExp>] [--clauseRegExp=<RegExp>]
-                             [--wordRegExp=<RegExp>] [--wordBoundaryRegExp=<RegExp>]
-                             [--abbrRegExp=<RegExp>]
+word-quiz-generator coverage --material=<path> --sources=<paths> [--lang]
+                             [--show-uncovered] [--sentenceSeparator=<RegExp>]
+                             [--clauseRegExp=<RegExp>] [--wordRegExp=<RegExp>]
+                             [--wordBoundaryRegExp=<RegExp>] [--abbrRegExp=<RegExp>]
 
 Measure the coverage of words/phrases in the given material against the given sources.
 
@@ -20,22 +20,25 @@ Measure the coverage of words/phrases in the given material against the given so
     Path to a material.
 -s, --sources=<paths>
     Comma-separated path strings to sources.
+-l, --lang=<lang>
+    IETF langage tag in which the material are written.
+    This determines how to extract a word/phrase or sentence from a text.
+    If you need more precise control over the extraction algorithm,
+    please use '--sentenceSeparator', '--clauseRegExp', '--wordRegExp',
+    '--wordBoundaryRegExp', and/or '--abbrRegExp' to override.
+    Default: 'en' (English)
 -u, --show-uncovered
     Show uncovered words/phrases.
-
-The following options determines how to extract a word/phrase or sentence from a text.
-For English sources, these are automatically set and usually don't need to override them.
-
 --sentenceSeparator=<RegExp>
-    Regular expression representing a sentence separator. Default: '(?:[?!.]\\s?)+"?(?:\\s|$)(?!,)'
+    Regular expression representing a sentence separator.
 --clauseRegExp=<RegExp>
-    Regular expression representing a clause. Default: '[^,:"?!.]+'
+    Regular expression representing a clause.
 --wordRegExp=<RegExp>
-    Regular expression representing a word. Default: '[\\w'-]+'
+    Regular expression representing a word.
 --wordBoundaryRegExp=<RegExp>
-    Regular expression representing a word boundary. Default: '\\b'
+    Regular expression representing a word boundary.
 --abbrRegExp=<RegExp>
-    Regular expression representing an abbreviation mark. Default: '\\.\\.\\.'`);
+    Regular expression representing an abbreviation mark.`);
 };
 
 export default async function (args) {
@@ -43,6 +46,7 @@ export default async function (args) {
     string: [
       'material',
       'sources',
+      'lang',
       'sentenceSeparator',
       'clauseRegExp',
       'wordRegExp',
@@ -56,6 +60,7 @@ export default async function (args) {
     alias: {
       m: 'material',
       s: 'sources',
+      l: 'lang',
       u: 'show-uncovered',
       h: 'help',
     },
@@ -73,6 +78,7 @@ export default async function (args) {
 
   const material = argv.material;
   const sources = argv.sources;
+  const lang = argv.lang;
   const sentenceSeparator =
     argv.sentenceSeparator && new RegExp(argv.sentenceSeparator, 'g');
   const clauseRegExp =
@@ -84,7 +90,7 @@ export default async function (args) {
   const abbrRegExp =
     argv.abbrRegExp && new RegExp(argv.abbrRegExp, 'g');
   const generator = new QuizGenerator({
-    material, sources, sentenceSeparator, clauseRegExp, wordRegExp,
+    material, sources, lang, sentenceSeparator, clauseRegExp, wordRegExp,
     wordBoundaryRegExp, abbrRegExp,
   });
 

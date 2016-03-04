@@ -7,7 +7,7 @@ const showUsage = () => {
   console.log(
 `word-quiz-generator generate --help
 word-quiz-generator generate --material=<path> --sources=<paths> --sections --size
-                             [--instruction] [--sentenceSeparator=<RegExp>]
+                             [--instruction] [--lang] [--sentenceSeparator=<RegExp>]
                              [--clauseRegExp=<RegExp>] [--wordRegExp=<RegExp>]
                              [--wordBoundaryRegExp=<RegExp>] [--abbrRegExp=<RegExp>]
 
@@ -23,25 +23,28 @@ Generate a quiz and put it to stdout using the given material and sources.
     Quiz coverage. e.g. '1-10', '5', '3-'
 -i, --size=<num>
     The number of questions.
+-l, --lang=<lang>
+    IETF langage tag in which the material are written.
+    This determines how to extract a word/phrase or sentence from a text.
+    If you need more precise control over the extraction algorithm,
+    please use '--sentenceSeparator', '--clauseRegExp', '--wordRegExp',
+    '--wordBoundaryRegExp', and/or '--abbrRegExp' to override.
+    Default: 'en' (English)
 --instruction
     The instruction text located at top of the quiz.
     Default: 'Write down the meaning of underlined words/phrases.'
 --skip-spaces
     Specify if a language you want to make a quiz has no word divider, such as Japanese and Chinese.
-
-The following options determines how to extract a word/phrase or sentence from a text.
-For English quiz, these are automatically set and usually don't need to override them.
-
 --sentenceSeparator=<RegExp>
-    Regular expression representing a sentence separator. Default: '(?:[?!.]\\s?)+"?(?:\\s|$)(?!,)'
+    Regular expression representing a sentence separator.
 --clauseRegExp=<RegExp>
-    Regular expression representing a clause. Default: '[^,:"?!.]+'
+    Regular expression representing a clause.
 --wordRegExp=<RegExp>
-    Regular expression representing a word. Default: '[\\w'-]+'
+    Regular expression representing a word.
 --wordBoundaryRegExp=<RegExp>
-    Regular expression representing a word boundary. Default: '\\b'
+    Regular expression representing a word boundary.
 --abbrRegExp=<RegExp>
-    Regular expression representing an abbreviation mark. Default: '\\.\\.\\.'`);
+    Regular expression representing an abbreviation mark.`);
 };
 
 export default async function (args) {
@@ -52,6 +55,7 @@ export default async function (args) {
       'sections',
       'size',
       'instruction',
+      'lang',
       'sentenceSeparator',
       'clauseRegExp',
       'wordRegExp',
@@ -65,12 +69,12 @@ export default async function (args) {
     alias: {
       m: 'material',
       s: 'sources',
+      l: 'lang',
       e: 'sections',
       i: 'size',
     },
     default: {
       instruction: 'Write down the meaning of underlined words/phrases.',
-      wordRegExp: '[\\w\'-]+',  // need for display
     },
   });
 
@@ -86,6 +90,7 @@ export default async function (args) {
 
   const material = argv.material;
   const sources = argv.sources;
+  const lang = argv.lang;
   const sentenceSeparator =
     argv.sentenceSeparator && new RegExp(argv.sentenceSeparator, 'g');
   const clauseRegExp =
@@ -97,9 +102,10 @@ export default async function (args) {
   const abbrRegExp =
     argv.abbrRegExp && new RegExp(argv.abbrRegExp, 'g');
   const generator = new QuizGenerator({
-    material, sources, sentenceSeparator, clauseRegExp, wordRegExp,
+    material, sources, lang, sentenceSeparator, clauseRegExp, wordRegExp,
     wordBoundaryRegExp, abbrRegExp,
   });
+
   await generator.init();
 
   const sections = argv.sections;
@@ -109,7 +115,8 @@ export default async function (args) {
   console.log(colors.bold(argv.instruction));
   questions.forEach((question, i) => {
     const sentenceParts = [];
-    const blockRegExp = new RegExp(`(${argv.wordRegExp})(\\s+)?`, 'g');
+    const _wordRegExp = generator._wordRegExp.source;
+    const blockRegExp = new RegExp(`(${_wordRegExp})(\\s+)?`, 'g');
     const { sentence, wordIndexes } = question;
     const divider = argv['skip-spaces'] ? '' : ' ';
     let currentWordIndex = 0;

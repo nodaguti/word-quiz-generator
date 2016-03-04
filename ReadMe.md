@@ -28,7 +28,7 @@ You can see details of each commands by executing a command with `--help`, e.g. 
 
 ### generate
 ```
-word-quiz-generator generate --material=<path> --sources=<paths> --sections --size [--instruction] [--sentenceSeparator=<RegExp>] [--clauseRegExp=<RegExp>] [--wordRegExp=<RegExp>] [--wordBoundaryRegExp=<RegExp>] [--abbrRegExp=<RegExp>]
+word-quiz-generator generate --material=<path> --sources=<paths> --sections --size [--instruction] [--lang] [--sentenceSeparator=<RegExp>] [--clauseRegExp=<RegExp>] [--wordRegExp=<RegExp>] [--wordBoundaryRegExp=<RegExp>] [--abbrRegExp=<RegExp>]
 ```
 `generate` command will generate a quiz and put it to stdout using the given material and sources.
 
@@ -61,25 +61,35 @@ word-quiz-generator generate --material=<path> --sources=<paths> --sections --si
 The following options determines how to extract a word/phrase or sentence from a text.
 For English quiz, these are automatically set and usually don't need to override them.
 
+- `--lang`
+
+  IETF langage tag in which the material are written.
+  This determines how to extract a word/phrase or sentence from a text.
+  If you need more precise control over the extraction algorithm,
+  please use `--sentenceSeparator`, `--clauseRegExp`, `--wordRegExp`,
+  `--wordBoundaryRegExp`, and/or `--abbrRegExp` to override.
+
+  Default: `en` (English)
+
 - `--sentenceSeparator`
 
-  Regular expression representing a sentence separator. Default: `(?:[?!.]\s?)+"?(?:\s|$)(?!,)`
+  Regular expression representing a sentence separator.
 
 - `--clauseRegExp`
 
-  Regular expression representing a clause. Default: `[^,:"?!.]+`
+  Regular expression representing a clause.
 
 - `--wordRegExp`
 
-  Regular expression representing a word. Default: `[\w'-]+`
+  Regular expression representing a word.
 
 - `--wordBoundaryRegExp`
 
-  Regular expression representing a word boundary. Default: `\b`
+  Regular expression representing a word boundary.
 
 - `--abbrRegExp`
 
-  Regular expression representing an abbreviation mark. Default: `\.\.\.`
+  Regular expression representing an abbreviation mark.
 
 #### Example
 ```
@@ -92,7 +102,7 @@ $ word-quiz-generator generate \
 
 ### coverage
 ```
-word-quiz-generator coverage --material=<path> --sources=<paths> [--show-uncovered] [--sentenceSeparator=<RegExp>] [--clauseRegExp=<RegExp>] [--wordRegExp=<RegExp>] [--wordBoundaryRegExp=<RegExp>] [--abbrRegExp=<RegExp>]
+word-quiz-generator coverage --material=<path> --sources=<paths> [--lang] [--show-uncovered] [--sentenceSeparator=<RegExp>] [--clauseRegExp=<RegExp>] [--wordRegExp=<RegExp>] [--wordBoundaryRegExp=<RegExp>] [--abbrRegExp=<RegExp>]
 ```
 `coverage` command will measure the phrase coverage against the given sources. It's usuful when you want to know whether the amount of sources is sufficient.
 
@@ -152,7 +162,7 @@ word-quiz-generator make --src=<path> [--preprocessor=<path>] [--lemmatizer=<pat
 ### QuizGenerator(options)
 Create a new instance that can generate a quiz.
 
-The available options are `material`, `sources`, `sentenceSeparator`, `clauseRegExp`, `wordRegExp`, `wordBoundaryRegExp` and `abbrRegExp`, all of which are same as the corresponding `generate` options.
+The available options are `material`, `sources`, `lang`, `sentenceSeparator`, `clauseRegExp`, `wordRegExp`, `wordBoundaryRegExp` and `abbrRegExp`, all of which are same as the corresponding `generate` options.
 
 ### .init()
 Initialize a instance. The reason why the initialization is not conducted in `constructor()` is in this method we load and parse the files of material and sources, which is an asynchronous process.

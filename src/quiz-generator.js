@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import RegExpPresets from './constants/regexp-presets';
 import Source from './source.js';
 import {
   fetchFileList,
@@ -16,23 +17,30 @@ export default class QuizGenerator {
   /**
    * @param {string} material Path to a CSV-formatted material file.
    * @param {string} sources Pathes to source text files or directries.
-   * @param {RegExp} [sentenceSeparator]
-   * @param {RegExp} [clauseRegExp]
-   * @param {RegExp} [wordRegExp]
-   * @param {RegExp} [wordBoundaryRegExp]
-   * @param {RegExp} [abbrRegExp]
+   * @param {string} [lang='en']
+   *   IETF language tag in which the material written.
+   *   `lang` is used for determining which RegExp preset should be used.
+   *   If not specified or not found in the presets, the 'en' preset will be used.
+   *   If you need to override each RegExps, please use individual parameters below.
+   * @param {RegExp} [sentenceSeparator] Regular expression representing a sentence separator.
+   * @param {RegExp} [clauseRegExp] Regular expression representing a clause.
+   * @param {RegExp} [wordRegExp] Regular expression representing a word.
+   * @param {RegExp} [wordBoundaryRegExp] Regular expression representing a word boundary.
+   * @param {RegExp} [abbrRegExp] Regular expression representing an abbreviation mark.
    */
   constructor({
     material,
     sources,
-    sentenceSeparator = /(?:[?!.]\s?)+"?(?:\s|$)(?!,)/g,
-    clauseRegExp = /[^,:"?!.]+/g,
-    wordRegExp = /[\w'\-\.]+/g,
-    wordBoundaryRegExp = /\b/,
-    abbrRegExp = /\.\.\./g,
+    lang = 'en',
+    sentenceSeparator,
+    clauseRegExp,
+    wordRegExp,
+    wordBoundaryRegExp,
+    abbrRegExp,
   }) {
     this._material = material;
     this._sources = sources;
+    this._lang = lang;
     this._sentenceSeparator = sentenceSeparator;
     this._clauseRegExp = clauseRegExp;
     this._wordRegExp = wordRegExp;
@@ -47,6 +55,17 @@ export default class QuizGenerator {
     this._phrases = await parseMaterial(this._material);
     this._sources = await fetchFileList(this._sources, /\.txt$/);
     this._sources = this._sources.map((path) => new Source(path));
+    this._loadRegExpPreset();
+  }
+
+  _loadRegExpPreset() {
+    const preset = RegExpPresets[this._lang] || RegExpPresets.en;
+
+    this._sentenceSeparator = this._sentenceSeparator || preset.sentenceSeparator;
+    this._clauseRegExp = this._clauseRegExp || preset.clauseRegExp;
+    this._wordRegExp = this._wordRegExp || preset.wordRegExp;
+    this._wordBoundaryRegExp = this._wordBoundaryRegExp || preset.wordBoundaryRegExp;
+    this._abbrRegExp = this._abbrRegExp || preset.abbrRegExp;
   }
 
   /**
@@ -153,7 +172,6 @@ export default class QuizGenerator {
     text.replace(phraseRegExp, (matched, block, offset) => {
       const lastIndex = offset + matched.length;
       matches.push({ matched, block, offset, lastIndex });
-      return block;
     });
 
     if (!matches.length) {
@@ -172,8 +190,8 @@ export default class QuizGenerator {
     );
     const sentence = leftContext + selected.matched + rightContext;
     const sentenceIndex = leftSentences.length;
-
     const wordIndexes = [];
+
     sentence.replace(phraseRegExp, (matched, block, offset) => {
       const left = sentence.substring(0, offset);
       const indexOffset = (left.match(this._wordRegExp) || []).length;
@@ -196,8 +214,8 @@ export default class QuizGenerator {
 
         const inlineLeft = block.substring(0, offset2);
         const inlineIndex = (inlineLeft.match(this._wordRegExp) || []).length;
-        wordIndexes.push(indexOffset + inlineIndex);
 
+        wordIndexes.push(indexOffset + inlineIndex);
         wordsCount--;
       });
     });
@@ -222,12 +240,10 @@ export default class QuizGenerator {
     if (!rightContext) {
       return body;
     }
-
     const endMarks = rightContext.match(this._sentenceSeparator);
     if (!endMarks) {
       return body;
     }
-
     const endMark = endMarks[0].trim();
 
     return body + endMark;

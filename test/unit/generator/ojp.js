@@ -58,11 +58,7 @@ const mapPhraseToSource = {
   const generator = new QuizGenerator({
     material: materialPath,
     sources: sourcePath,
-    sentenceSeparator: /(?:。|[\n\r]+|「|」|『|』)(?:\s+)?/g,
-    clauseRegExp: /[^、。「」『』]+/g,
-    wordRegExp: /\S+/g,
-    wordBoundaryRegExp: /\s/,
-    abbrRegExp: /〜/g,
+    lang: 'ojp',
   });
 
   await generator.init();
