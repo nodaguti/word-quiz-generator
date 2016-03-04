@@ -1,29 +1,98 @@
 import { assertOutput } from '../../utils';
 import preprocessor from '../../../src/preprocessor/ojp';
 
+const leftBrackets = {
+  round: ['（', '('],
+  cornered: ['［', '['],
+  shell: ['〔'],
+  curly: ['｛', '{'],
+};
+
+const rightBrackets = {
+  round: ['）', ')'],
+  cornered: ['］', ']'],
+  shell: ['〕'],
+  curly: ['｝', '}'],
+};
+
 describe('Old Japanese preprocessor', () => {
   it('can remove annotations', async () => {
-    await assertOutput({
-      func: preprocessor,
-      input: `あ（い）う
-あ（い)う
-あ(い）う
-あ(い)う
-あ[い]う
-あ［い］う
-あ[い］う
-あ［い]う
-あ〔い〕う`,
-      expected: `あう
-あう
-あう
-あう
-あう
-あう
-あう
-あう
-あう`,
-    });
+    for (const key in leftBrackets) {
+      if (!leftBrackets.hasOwnProperty(key)) {
+        return;
+      }
+
+      const lefts = leftBrackets[key];
+      const rights = rightBrackets[key];
+
+      for (const left of lefts) {
+        for (const right of rights) {
+          await assertOutput({
+            func: preprocessor,
+            input: `あ${left}い${right}う`,
+            expected: 'あう',
+          });
+        }
+      }
+    }
+  });
+
+  it('can remove nested annotations', async () => {
+    for (const key in leftBrackets) {
+      if (!leftBrackets.hasOwnProperty(key)) {
+        return;
+      }
+
+      const lefts = leftBrackets[key];
+      const rights = rightBrackets[key];
+
+      for (const outerLeft of lefts) {
+        for (const innerLeft of lefts) {
+          for (const outerRight of rights) {
+            for (const innerRight of rights) {
+              await assertOutput({
+                func: preprocessor,
+                input: `あ${outerLeft}い${innerLeft}う${innerRight}え${outerRight}お`,
+                expected: 'あお',
+              });
+            }
+          }
+        }
+      }
+    }
+  });
+
+  it('can remove broken nested annotations', async () => {
+    for (const key in leftBrackets) {
+      if (!leftBrackets.hasOwnProperty(key)) {
+        return;
+      }
+
+      const lefts = leftBrackets[key];
+      const rights = rightBrackets[key];
+
+      for (const outerLeft of lefts) {
+        for (const innerLeft of lefts) {
+          for (const outerRight of rights) {
+            for (const innerRight of rights) {
+              // too many lefts
+              await assertOutput({
+                func: preprocessor,
+                input: `あ${outerLeft}い${innerLeft}う${innerRight}あい`,
+                expected: 'ああ い',
+              });
+
+              // too many rights
+              await assertOutput({
+                func: preprocessor,
+                input: `あい${innerLeft}う${innerRight}あ${outerRight}い`,
+                expected: 'あいあい',
+              });
+            }
+          }
+        }
+      }
+    }
   });
 
   it('can un-odorijify simple repeat marks', async () => {
@@ -42,11 +111,11 @@ describe('Old Japanese preprocessor', () => {
     });
   });
 
-  it('can remove brackets', async () => {
+  it('can remove cornered brackets', async () => {
     await assertOutput({
       func: preprocessor,
-      input: '｢」「」『』｛｝',
-      expected: '',
+      input: '｢あ」「た」『ま』',
+      expected: 'あたま',
     });
   });
 

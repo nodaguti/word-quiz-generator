@@ -14,7 +14,8 @@
     "progress": "^1.1.8",
     "shell-quote": "^1.4.3",
     "source-map-support": "^0.4.0",
-    "treetagger": "^0.1.1"
+    "treetagger": "^0.1.1",
+    "xregexp": "^3.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.6.4",
@@ -51,7 +52,7 @@
     "build": "babel src --out-dir lib --source-maps",
     "test": "npm-run-all lint test:cover",
     "test:mocha": "mocha --compilers js:babel-core/register",
-    "test:cover": "$(npm bin)/babel-node $(npm bin)/isparta cover --report text node_modules/mocha/bin/_mocha",
+    "test:cover": "$(npm bin)/babel-node $(npm bin)/isparta cover --report text --report html node_modules/mocha/bin/_mocha",
     "lint": "eslint test src",
     "watch": "babel src --out-dir lib --watch --source-maps",
     "prepublish": "npm-run-all test build"
