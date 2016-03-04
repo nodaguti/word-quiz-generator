@@ -1,5 +1,5 @@
-import { assertOutput } from '../../utils';
-import preprocessor from '../../../src/preprocessor/en.js';
+import { assertOutput } from '../../_helpers';
+import preprocessor from '../../../src/preprocessor/en';
 
 describe('English preprocessor', () => {
   it('can remove unnecessary line breaks', async () => {

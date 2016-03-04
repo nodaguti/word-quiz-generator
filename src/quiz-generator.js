@@ -185,18 +185,21 @@ export default class QuizGenerator {
               .match(this._wordRegExp) || []
           )
       );
+      let wordsCount = words.length;
       const escapedWords = words.map((word) => word.replace(/\W/g, '\\$&')).join('|');
       const wordsRegExp = new RegExp(`(?:${escapedWords})`, 'gi');
 
       block.replace(wordsRegExp, (word, offset2) => {
+        if (wordsCount <= 0) {
+          return;
+        }
+
         const inlineLeft = block.substring(0, offset2);
         const inlineIndex = (inlineLeft.match(this._wordRegExp) || []).length;
         wordIndexes.push(indexOffset + inlineIndex);
 
-        return word;
+        wordsCount--;
       });
-
-      return matched;
     });
 
     return { sentenceIndex, wordIndexes };

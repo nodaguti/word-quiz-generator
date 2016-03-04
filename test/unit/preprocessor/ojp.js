@@ -1,4 +1,4 @@
-import { assertOutput } from '../../utils';
+import { assertOutput } from '../../_helpers';
 import preprocessor from '../../../src/preprocessor/ojp';
 
 const leftBrackets = {
