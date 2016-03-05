@@ -29,6 +29,19 @@ const sourcePath = path.resolve(__dirname, '../../fixtures/sources/en/');
         const phraseObj = generator._phrases[0];
         const question = await generator.question(phraseObj);
 
+        assert(question !== null);
+        assert(question.phrase === phraseObj.phrase);
+        assert(question.answer === phraseObj.answer);
+      });
+
+      it('returns a question for a word which is contained in a only source', async () => {
+        const phraseObj = {
+          phrase: 'Tarnovo',
+          answer: 'Tarnovo (answer)',
+        };
+        const question = await generator.question(phraseObj);
+
+        assert(question !== null);
         assert(question.phrase === phraseObj.phrase);
         assert(question.answer === phraseObj.answer);
       });
@@ -37,7 +50,6 @@ const sourcePath = path.resolve(__dirname, '../../fixtures/sources/en/');
         const phraseObj = {
           phrase: 'hogefuga',
           answer: 'beeboo',
-          reference: 'foobar',
         };
         const question = await generator.question(phraseObj);
 

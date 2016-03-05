@@ -52,8 +52,8 @@
   "scripts": {
     "build": "babel src --out-dir lib --source-maps",
     "test": "npm-run-all lint test:cover",
-    "test:mocha": "mocha --compilers js:babel-core/register",
-    "test:cover": "$(npm bin)/babel-node $(npm bin)/isparta cover --report text --report html node_modules/mocha/bin/_mocha",
+    "test:mocha": "mocha --compilers js:babel-core/register test/unit",
+    "test:cover": "$(npm bin)/babel-node $(npm bin)/isparta cover --report text --report html node_modules/mocha/bin/_mocha -- test/unit",
     "lint": "eslint test src",
     "watch": "babel src --out-dir lib --watch --source-maps",
     "prepublish": "npm-run-all test build"

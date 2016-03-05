@@ -109,7 +109,7 @@ export default class QuizGenerator {
 
     while (sources.length > 0) {
       const src = sources.pop();
-      const question = this.getQuestionFromSource({ phrase, src });
+      const question = await this.getQuestionFromSource({ phrase, src });
 
       if (!question) {
         continue;
