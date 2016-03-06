@@ -161,7 +161,6 @@ word-quiz-generator make --src=<path> [--preprocessor=<path>] [--lemmatizer=<pat
   Path to a custom lemmatizer.
   A custom lemmatizer must export an async function as default which returns the lemmatized text.
 
-
 ## API
 ### QuizGenerator(options)
 Create a new instance that can generate a quiz.
@@ -236,7 +235,6 @@ For example, when you are using the built-in English preprocessor and lemmatizer
 #### answer
 An answer represents the meaning of the phrase.
 
-
 ## Source
 
 __Source__ is a text with reference information. Word Quiz Generator will extract a sentence from the body text of a source and create a question.
@@ -295,6 +293,18 @@ To make such sentences recognizable to the generator, the [lemmatisation](https:
 
 and the generator is now able to know the sentence contains the phrase "go through".
 
+## Tests
+```
+npm test
+```
+
+## Contributing
+
+1. Fork it!
+2. Create your feature branch: `git checkout -b my-new-feature`
+3. Commit your changes: `git commit -am 'Add some feature'`
+4. Push to the branch: `git push origin my-new-feature`
+5. Submit a pull request :D
 
 ## License
 
@@ -310,5 +320,7 @@ MIT License (http://nodaguti.mit-license.org/)
   - Used for the test data (sources) of English.
 - [UniDic for Early Middle Japanese (中古和文UniDic)](http://www2.ninjal.ac.jp/lrc/index.php?UniDic%2F%C3%E6%B8%C5%CF%C2%CA%B8UniDic), Toshinobu Ogiso, [UniDic License](http://www2.ninjal.ac.jp/lrc/index.php?UniDic%2F%C3%E6%B8%C5%CF%C2%CA%B8UniDic#u7300511).
   - Used for the preprocessor and lemmatizer of Old Japanese (ojp).
-- [Uji Shui Monogatari (宇治拾遺物語)](http://www2s.biglobe.ne.jp/~Taiju/1212_ujishui_01.htm), degitized by Taiju, retrieved from [日本古典文学テキスト](http://www2s.biglobe.ne.jp/~Taiju/classic.htm).
+- [Izayoi Nikki (十六夜日記)](http://www2s.biglobe.ne.jp/~Taiju/isayoi.htm), degitized by Taiju, retrieved from [日本古典文学テキスト](http://www2s.biglobe.ne.jp/~Taiju/classic.htm), Public Domain.
+  - Used for the test data (sources) of Old Japanese.
+- [Wikisource (Japanese)](https://ja.wikisource.org/), Creative Commons Attribution-ShareAlike 3.0 Unported License.
   - Used for the test data (sources) of Old Japanese.
