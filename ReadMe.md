@@ -1,5 +1,9 @@
 # Word Quiz Generator
 
+[![Build Status](https://travis-ci.org/nodaguti/word-quiz-generator.svg?branch=master)](https://travis-ci.org/nodaguti/word-quiz-generator)
+[![Coverage Status](https://coveralls.io/repos/github/nodaguti/word-quiz-generator/badge.svg?branch=master)](https://coveralls.io/github/nodaguti/word-quiz-generator?branch=master)
+[![Code Climate](https://codeclimate.com/github/nodaguti/word-quiz-generator/badges/gpa.svg)](https://codeclimate.com/github/nodaguti/word-quiz-generator)
+
 ![screenshot.png](screenshot.png)
 
 A tool for generating a vocabulary quiz.
