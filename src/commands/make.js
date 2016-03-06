@@ -21,6 +21,7 @@ Generate preprocessed and lemmatized texts from the given sources.
     IETF langage tag in which source texts are written.
     This determines which built-in preprocesser and lemmatizer should be used.
     If you want to use your custom ones, please use '--preprocessor' and '--lemmatizer' options.
+    Default: 'en' (English)
 --preprocessor=<path>
   Path to a custom preprocessor.
 --lemmatizer=<path>
