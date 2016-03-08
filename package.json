@@ -57,7 +57,6 @@
     "test:mocha": "mocha --compilers js:babel-core/register test/unit",
     "test:cover": "$(npm bin)/babel-node $(npm bin)/isparta cover --report text --report lcov _mocha -- test/unit",
     "lint": "eslint test src",
-    "watch": "babel src --out-dir lib --watch --source-maps",
-    "prepublish": "npm-run-all test build"
+    "prepublish": "npm-run-all build"
   }
 }
