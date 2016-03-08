@@ -2,6 +2,8 @@ sudo: false
 language: node_js
 node_js:
   - stable
+before_script:
+  - node lib/cli.js install TreeTagger MeCab
 after_success:
   - "$(npm bin)/coveralls < ./coverage/lcov.info"
 env:
