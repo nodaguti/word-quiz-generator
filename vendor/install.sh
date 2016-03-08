@@ -92,7 +92,7 @@ install_mecab () {
   cd ${DIR}/mecab > /dev/null
   unzip unidic-EMJ_14.zip
   cp -r ${DIR}/mecab/unidic-EMJ_14/Files/dic/unidic-mecab ${DIR}/mecab/unidic-ojp
-  sed -e "s|@@DICDIR@@|${DIR}/mecab/unidic-ojp|g" ${DIR}/mecab/.mecabrc > ${DIR}/mecab/unidic-ojp/.mecabrc-ojp
+  sed -e "s|@@DICDIR@@|${DIR}/mecab/unidic-ojp|g" ${DIR}/.mecabrc > ${DIR}/mecab/unidic-ojp/.mecabrc-ojp
 
   echo ""
   tput bold && echo "Finishing" && tput sgr0
