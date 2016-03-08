@@ -4,6 +4,8 @@ node_js:
   - stable
 before_script:
   - node lib/cli.js install TreeTagger MeCab
+script:
+  - npm test
 after_success:
   - "$(npm bin)/coveralls < ./coverage/lcov.info"
 env:
