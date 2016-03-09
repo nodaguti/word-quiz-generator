@@ -73,6 +73,7 @@ function removeAnnotations(text) {
     ['\\[', '\\]'],
     ['\\{', '\\}'],
     ['〔', '〕'],
+    ['【', '】'],
   ];
 
   brackets.forEach((pair) => {

@@ -6,6 +6,7 @@ const leftBrackets = {
   cornered: ['［', '['],
   shell: ['〔'],
   curly: ['｛', '{'],
+  lenticular: ['【'],
 };
 
 const rightBrackets = {
@@ -13,6 +14,7 @@ const rightBrackets = {
   cornered: ['］', ']'],
   shell: ['〕'],
   curly: ['｝', '}'],
+  lenticular: ['】'],
 };
 
 describe('Old Japanese preprocessor', () => {
