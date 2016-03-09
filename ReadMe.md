@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/nodaguti/word-quiz-generator.svg?branch=master)](https://travis-ci.org/nodaguti/word-quiz-generator)
 [![Coverage Status](https://coveralls.io/repos/github/nodaguti/word-quiz-generator/badge.svg?branch=master)](https://coveralls.io/github/nodaguti/word-quiz-generator?branch=master)
+[![Dependency Status](https://david-dm.org/nodaguti/word-quiz-generator.svg)](https://david-dm.org/nodaguti/word-quiz-generator)
+[![devDependency Status](https://david-dm.org/nodaguti/word-quiz-generator/dev-status.svg)](https://david-dm.org/nodaguti/word-quiz-generator#info=devDependencies)
 [![Code Climate](https://codeclimate.com/github/nodaguti/word-quiz-generator/badges/gpa.svg)](https://codeclimate.com/github/nodaguti/word-quiz-generator)
 
 ![screenshot.png](screenshot.png)
