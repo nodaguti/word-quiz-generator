@@ -23,19 +23,27 @@ hyphen soft- hyphen soft-  hyphen`,
     });
   });
 
-  it('can remove full-width apostrophes', async () => {
+  it('can convert full-width apostrophes', async () => {
     await assertOutput({
       func: preprocessor,
-      input: "'’’'",
+      input: "'‘’'",
       expected: "''''",
     });
   });
 
-  it('can remove full-width quotation marks', async () => {
+  it('can convert full-width quotation marks', async () => {
     await assertOutput({
       func: preprocessor,
       input: '"“”"',
       expected: '""""',
+    });
+  });
+
+  it('can convert full-width dash', async () => {
+    await assertOutput({
+      func: preprocessor,
+      input: '—',
+      expected: '-',
     });
   });
 });

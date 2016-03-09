@@ -7,6 +7,7 @@ export default function (text) {
     .replace(/(\w)-\s+(\w)/g, '$1$2')
 
     // Replace some full-width signs with their half-width ones.
-    .replace(/’/g, '\'')
-    .replace(/(?:“|”)/g, '"');
+    .replace(/(?:‘|’)/g, '\'')
+    .replace(/(?:“|”)/g, '"')
+    .replace(/—/g, '-');
 }
