@@ -19,6 +19,7 @@ const coreNLP = new NLP.StanfordNLP({
 function processWithCoreNLP(text) {
   return new Promise((resolve, reject) => {
     coreNLP.process(text, (err, result) => {
+      /* istanbul ignore if */
       if (err) {
         return reject(err);
       }
@@ -29,7 +30,8 @@ function processWithCoreNLP(text) {
 
 async function lemmatize(sentence) {
   const result = await processWithCoreNLP(sentence);
-  const tokens = result.document.sentences.sentence.tokens.token;
+  const coreNLPToken = result.document.sentences.sentence.tokens.token;
+  const tokens = Array.isArray(coreNLPToken) ? coreNLPToken : [coreNLPToken];
   const lemmatized = tokens.map((token, i) => {
     let shouldSpaced = true;
     let lemma;

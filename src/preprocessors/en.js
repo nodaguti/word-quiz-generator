@@ -18,6 +18,7 @@ const coreNLP = new NLP.StanfordNLP({
 function processWithCoreNLP(text) {
   return new Promise((resolve, reject) => {
     coreNLP.process(text, (err, result) => {
+      /* istanbul ignore if */
       if (err) {
         return reject(err);
       }
@@ -39,23 +40,19 @@ export default async function (text) {
     .replace(/(?:“|”)/g, '"')
     .replace(/—/g, '--');
 
-  try {
-    const result = await processWithCoreNLP(emended);
-    const sentences = [];
+  const result = await processWithCoreNLP(emended);
+  const sentences = [];
 
-    if (Array.isArray(result.document.sentences.sentence)) {
-      for (const sentenceData of result.document.sentences.sentence) {
-        const begin = _.first(sentenceData.tokens.token).CharacterOffsetBegin;
-        const end = _.last(sentenceData.tokens.token).CharacterOffsetEnd;
+  if (Array.isArray(result.document.sentences.sentence)) {
+    for (const sentenceData of result.document.sentences.sentence) {
+      const begin = _.first(sentenceData.tokens.token).CharacterOffsetBegin;
+      const end = _.last(sentenceData.tokens.token).CharacterOffsetEnd;
 
-        sentences.push(emended.slice(begin, end));
-      }
-
-      return sentences.join('\n');
+      sentences.push(emended.slice(begin, end));
     }
 
-    return emended;
-  } catch (err) {
-    return emended;
+    return sentences.join('\n');
   }
+
+  return emended;
 }

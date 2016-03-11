@@ -11,6 +11,14 @@ describe('English lemmatizer', () => {
     });
   });
 
+  it('can get a lemma of a word', async () => {
+    await assertOutput({
+      func: lemmatizer,
+      input: 'Did.',
+      expected: 'do .',
+    });
+  });
+
   it('can get lemmas of small numbers', async () => {
     await assertOutput({
       func: lemmatizer,
