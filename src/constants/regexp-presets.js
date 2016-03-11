@@ -5,7 +5,7 @@
 
 export default {
   en: {
-    sentenceSeparator: /(?:[?!.]\s?)+"?(?:\s|$)(?!,)/g,
+    sentenceSeparator: /\n/g,
     clauseRegExp: /[^,:"?!.]+/g,
     wordRegExp: /[\w'\-\.]+/g,
     wordBoundaryRegExp: /\b/,

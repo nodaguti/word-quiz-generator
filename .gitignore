@@ -3,7 +3,10 @@ npm-debug.log
 .DS_Store
 /lib
 /coverage
-/vendor/treetagger
-/vendor/mecab
+
+/vendor/*
+!/vendor/install.sh
+!/vendor/.mecabrc
+
 *.lemmatized
 *.preprocessed

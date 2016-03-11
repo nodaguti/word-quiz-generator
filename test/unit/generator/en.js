@@ -145,11 +145,11 @@ const sourcePath = path.resolve(__dirname, '../../fixtures/sources/en/');
         '(Eh, Wikipedia) It is also commonly used as a question tag, i.e., method for inciting a reply, as in "It\'s nice here, eh?"',
       ];
       const lemmatized = [
-        '" one think , " one say , " one do\'n\'t trust anyone besides oneself . "',
-        'on 26 April 1915 , Smith , on one\'s own initiative , recover wounded soldier while expose to sustained fire and attend to one " with the great devotion to duty regardless of personal risk " ( Issy Smith , Wikipedia) .',
-        'one be not hard for one to " talk one into change one\'s mind " ( Nando Parrado , Wikipedia) .',
-        'the full name be write as : first name ( give name ) follow by the one\'s name ( Patronymic , Wikipedia) .',
-        '( Eh , Wikipedia ) one be also commonly use as a question tag , i.e. , method for incite a reply , as in " one\'be nice here , eh ? "',
+        '" one think , " one say , " one do\'not trust anyone besides oneself . "',
+        'on 26 April 1915 , Smith , on one\'s own initiative , recover wounded soldier while expose to sustained fire and attend to one " with the greatest devotion to duty regardless of personal risk " ( Issy Smith , Wikipedia ) .',
+        'one be not hard for one to " talk one into change one\'s mind " ( Nando Parrado , Wikipedia ) .',
+        'the full name be write as : first name ( give name ) follow by the one\'s name ( Patronymic , Wikipedia ) .',
+        '( eh , Wikipedia ) one be also commonly use as a question tag , i.e. , method for incite a reply , as in " one\'be nice here , eh ? "',
       ];
 
       testGetSentenceAt({

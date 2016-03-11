@@ -22,8 +22,8 @@ describe('English lemmatizer', () => {
   it('can get lemmas of big numbers', async () => {
     await assertOutput({
       func: lemmatizer,
-      input: 'Rumour says the teacher won 12,345 doller in the competition.',
-      expected: 'rumour say the teacher win 12,345 doller in the competition .',
+      input: 'The teacher won 12,345 doller in the competition.',
+      expected: 'the teacher win 12,345 doller in the competition .',
     });
   });
 
@@ -59,11 +59,11 @@ describe('English lemmatizer', () => {
     });
   });
 
-  it('can get lemmas of abbreviation form of `be`, `have`, etc.', async () => {
+  it('can get lemmas of contraction of `it is`, `he has`, etc.', async () => {
     await assertOutput({
       func: lemmatizer,
-      input: "It's nice. He's good. He's been to London. I'll go. I'd like to eat.",
-      expected: "one'be nice . one'be good . one'have be to London . one'will go . one'will like to eat .",
+      input: "It's nice. He's a good student. We've never had a car. They'll go to Tokyo tomorrow. It won't be rain. We'd like to accept the offer. He doesn't have any ideas.",
+      expected: "one'be nice . one'be a good student . one'have never have a car . one'will go to Tokyo tomorrow . one will'not be rain . one'would like to accept the offer . one do'not have any idea .",
     });
   });
 
