@@ -36,16 +36,19 @@ export default async function (text) {
   const result = await processWithCoreNLP(emended);
   const sentences = [];
 
-  if (Array.isArray(result.document.sentences.sentence)) {
-    for (const sentenceData of result.document.sentences.sentence) {
-      const begin = _.first(sentenceData.tokens.token).CharacterOffsetBegin;
-      const end = _.last(sentenceData.tokens.token).CharacterOffsetEnd;
-
-      sentences.push(emended.slice(begin, end));
-    }
-
-    return sentences.join('\n');
+  // there is just one sentence and don't need to split it!
+  if (!Array.isArray(result.document.sentences.sentence)) {
+    return emended;
   }
 
-  return emended;
+  for (const sentenceData of result.document.sentences.sentence) {
+    const coreNLPToken = sentenceData.tokens.token;
+    const tokens = Array.isArray(coreNLPToken) ? coreNLPToken : [coreNLPToken];
+    const begin = _.first(tokens).CharacterOffsetBegin;
+    const end = _.last(tokens).CharacterOffsetEnd;
+
+    sentences.push(emended.slice(begin, end));
+  }
+
+  return sentences.join('\n');
 }
