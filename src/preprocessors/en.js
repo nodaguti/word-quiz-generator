@@ -6,13 +6,6 @@ const coreNLP = new NLP.StanfordNLP({
   nlpPath: path.join(__dirname, '../../vendor/corenlp/corenlp'),
   version: '3.5.2',
   annotators: ['tokenize', 'ssplit'],
-  extra: {
-    'tokenize.options': [
-      'normalizeParentheses=false',
-      'normalizeOtherBrackets=false',
-      'asciiQuotes=true',
-    ].join(','),
-  },
 });
 
 function processWithCoreNLP(text) {
