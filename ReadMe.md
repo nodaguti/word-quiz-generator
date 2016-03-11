@@ -314,8 +314,8 @@ MIT License (http://nodaguti.mit-license.org/)
 
 ## Acknowledgment
 
-- [TreeTagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/), Helmut Schmid, [TreeTagger License](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/Tagger-Licence).
-  - Used for the lemmatizer of English.
+- [Stanford CoreNLP](https://stanfordnlp.github.io/CoreNLP/).
+  - Used for preprocessor and lemmatizer of English.
 - [GNU Collaborative International Dictionary of English](http://gcide.gnu.org.ua/), GNU Dico, GNU General Public License.
   - Used for the test data (materials) of English.
 - [Wikipedia](https://www.wikipedia.org/),  Creative Commons Attribution-ShareAlike 3.0 Unported License.
