@@ -11,7 +11,7 @@ import {
 const sources = {
   'simple.txt': 'a simple sentence',
   'possessive.txt': 'a sentence containing possesive words',
-  'omitted.txt': 'a sentence containing omission of letters',
+  'contraction.txt': 'a sentence containing contraction',
   'complex.txt': 'a complex sentence',
 };
 
@@ -27,7 +27,7 @@ const mapPhraseToSource = {
       wordIndexes: [4],
       words: ['besides'],
     },
-    'a sentence containing omission of letters': {
+    'a sentence containing contraction': {
       sentenceIndex: 0,
       wordIndexes: [8],
       words: ['besides'],
@@ -49,7 +49,7 @@ const mapPhraseToSource = {
       wordIndexes: [22, 23],
       words: ['regardless', 'of'],
     },
-    'a sentence containing omission of letters': {
+    'a sentence containing contraction': {
       sentenceIndex: 1,
       wordIndexes: [6, 7],
       words: ['regardless', 'of'],
@@ -71,7 +71,7 @@ const mapPhraseToSource = {
       wordIndexes: [22, 25],
       words: ['talk', 'into'],
     },
-    'a sentence containing omission of letters': {
+    'a sentence containing contraction': {
       sentenceIndex: 2,
       wordIndexes: [2, 4],
       words: ['talked', 'into'],
@@ -93,7 +93,7 @@ const mapPhraseToSource = {
       wordIndexes: [4, 5],
       words: ['his', 'name'],
     },
-    'a sentence containing omission of letters': {
+    'a sentence containing contraction': {
       sentenceIndex: 3,
       wordIndexes: [6, 7],
       words: ['their', 'name'],
