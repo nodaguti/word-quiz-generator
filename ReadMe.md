@@ -306,7 +306,7 @@ and the generator is now able to know the sentence contains the phrase "go throu
 ### CLI
 In word-quiz-generator, you can preprocess and lemmatize your text from CLI.
 
-1. Install binary dependencies, which parse a text and convert each words into their lemma. 👉 See [install](#install).
+1. Install binary dependencies, which parse a text and convert each words into their lemma. 👉 See [install](#install-1).
 
   ```
   word-quiz-generator install [package name]
