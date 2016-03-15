@@ -126,13 +126,21 @@ word-quiz-generator install <package name> [... <package name>]
 `install` command will install the dependent binaries under `${package's root}/vendor` that are needed for [preprocessing and lemmatizing](#preprocessing-and-lemmatizing).
 
 #### Available Packages
-- TreeTagger
+- `CoreNLP`
 
-  [A language independent part-of-speech tagger](http://www.cis.uni-muenchen.de/~schmid/tools/TreeTagger/). Currently it is required when you want to lemmatize a English text.
+  [A suite of core NLP (natural language processing) tools](https://stanfordnlp.github.io/CoreNLP/) by Stanford University.
 
-- Mecab
+- `MeCab`
 
-  [Yet Another Part-of-Speech and Morphological Analyzer](https://mecab.googlecode.com/svn/trunk/mecab/doc/index.html). Currently it is required when you want to preprocess and lemmatize an Old Japanese text.
+  [Yet Another Part-of-Speech and Morphological Analyzer](https://mecab.googlecode.com/svn/trunk/mecab/doc/index.html) by Kyoto University and NTT.
+
+#### Package to install
+The packages you need to install depend on what languages do you want to test in your quizzes.
+
+|Language|Language Tag (`--lang`)|Required Package(s)|
+|:---:|:---:|:---:|
+|English|en|CoreNLP|
+|Old Japanese (古文, _kobun_)|ojp|MeCab|
 
 ### make
 ```
@@ -294,6 +302,21 @@ To make such sentences recognizable to the generator, the [lemmatisation](https:
 > if another sailor **go** through the bag, the **odd** **be** high the thief **will** tie the bag back
 
 and the generator is now able to know the sentence contains the phrase "go through".
+
+### CLI
+In word-quiz-generator, you can preprocess and lemmatize your text from CLI.
+
+1. Install binary dependencies, which parse a text and convert each words into their lemma. 👉 See [install](#install).
+
+  ```
+  word-quiz-generator install [package name]
+  ```
+
+2. Run `make` command. 👉 See [make](#make).
+
+  ```
+  word-quiz-generator make --src=<path to sources> --lang=<language tag>
+  ```
 
 ## Tests
 ```
