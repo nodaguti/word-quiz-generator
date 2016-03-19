@@ -12,7 +12,7 @@
     "fs-extra-promise": "^0.3.1",
     "lodash": "^4.6.1",
     "minimist": "^1.2.0",
-    "npm-run-all": "^1.5.2",
+    "npm-run-all": "^1.6.0",
     "pad": "^1.0.0",
     "progress": "^1.1.8",
     "shell-quote": "^1.4.3",
