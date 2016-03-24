@@ -1,7 +1,7 @@
 {
   "name": "word-quiz-generator",
   "description": "Easy-to-use Word Quiz Generator",
-  "version": "1.1.0",
+  "version": "2.0.0",
   "author": "nodaguti",
   "bin": "lib/cli.js",
   "bugs": "https://github.com/nodaguti/word-quiz-generator/issues",
