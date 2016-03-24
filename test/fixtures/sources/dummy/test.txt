@@ -1,0 +1,2 @@
+test.txt
+This is a dummy text for tests against source.js.

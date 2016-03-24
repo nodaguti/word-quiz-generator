@@ -138,6 +138,7 @@ export default class QuizGenerator {
     const reference = await src.preprocessed.getReference();
     const sentence = this.getSentenceAt({ index: sentenceIndex, text });
 
+    /* istanbul ignore if */
     if (!sentence) {
       return null;
     }
@@ -342,6 +343,7 @@ export default class QuizGenerator {
   getSentenceAt({ index, text }) {
     const body = text.split(this._sentenceSeparator)[index];
 
+    /* istanbul ignore if */
     if (!body) {
       return null;
     }
