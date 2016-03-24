@@ -2,6 +2,7 @@
 set -eu
 
 DIR=$(cd $(dirname $0); pwd)
+CURL_NO_PROGRESSBAR= # changed to --silent if --no-progress is specified.
 
 if [ "$(uname)" == 'Darwin' ]; then
   OS='Mac'
@@ -33,7 +34,7 @@ install_corenlp () {
   rm -rfv ${DIR}/corenlp
 
   mkdir -pv ${DIR}/corenlp
-  cd ${DIR}/corenlp > /dev/null
+  cd ${DIR}/corenlp
 
   # Install npm dependencies
   npm install nodaguti/node-stanford-corenlp#fix-parsed-tree
@@ -41,11 +42,11 @@ install_corenlp () {
   # Install 3.5.2 instead of 3.6.0 because 3.6.0 cannot be launched due to the lacks of log4j dependency
   echo ""
   tput bold && echo "Downloading Stanford CoreNLP 3.5.2" && tput sgr0
-  curl -# -O  http://nlp.stanford.edu/software/stanford-corenlp-full-2015-04-20.zip
+  curl -# -O $CURL_NO_PROGRESSBAR http://nlp.stanford.edu/software/stanford-corenlp-full-2015-04-20.zip
 
   echo ""
   tput bold && echo "Installing Stanford CoreNLP" && tput sgr0
-  unzip stanford-corenlp-full-2015-04-20.zip
+  unzip -qq stanford-corenlp-full-2015-04-20.zip
   mv stanford-corenlp-full-2015-04-20 corenlp
 
   tput bold && echo "Finishing" && tput sgr0
@@ -57,41 +58,43 @@ install_mecab () {
   rm -rfv ${DIR}/mecab
 
   mkdir -pv ${DIR}/mecab
-  cd ${DIR}/mecab > /dev/null
+  cd ${DIR}/mecab
 
   echo ""
   tput bold && echo "Downloading MeCab 0.996" && tput sgr0
-  curl -# -L "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE" > mecab-0.996.tar.gz
+  curl -# -L $CURL_NO_PROGRESSBAR "https://drive.google.com/uc?export=download&id=0B4y35FiV1wh7cENtOXlicTFaRUE" > mecab-0.996.tar.gz
 
   tput bold && echo "Downloading UniDic for Early Middle Japanese ver1.4" && tput sgr0
-  curl -# -O "https://dl.dropboxusercontent.com/u/134600/unidic-EMJ_14.zip"
+  curl -# -O $CURL_NO_PROGRESSBAR "https://dl.dropboxusercontent.com/u/134600/unidic-EMJ_14.zip"
 
   echo ""
   tput bold && echo "Installing Mecab" && tput sgr0
 
-  tar zxfv mecab-0.996.tar.gz
+  tar zxf mecab-0.996.tar.gz
   mkdir -pv ${DIR}/mecab/mecab
-  cd ${DIR}/mecab/mecab-0.996 > /dev/null
-  ./configure --prefix=${DIR}/mecab/mecab --with-charset=utf8
+  cd ${DIR}/mecab/mecab-0.996
+  ./configure --prefix=${DIR}/mecab/mecab --enable-utf8-only
   make
+  make check
   make install
 
   echo ""
   tput bold && echo "Installing UniDic" && tput sgr0
-  cd ${DIR}/mecab > /dev/null
+  cd ${DIR}/mecab
   unzip unidic-EMJ_14.zip
   cp -r ${DIR}/mecab/unidic-EMJ_14/Files/dic/unidic-mecab ${DIR}/mecab/unidic-ojp
   sed -e "s|@@DICDIR@@|${DIR}/mecab/unidic-ojp|g" ${DIR}/.mecabrc > ${DIR}/mecab/unidic-ojp/.mecabrc-ojp
 
   echo ""
   tput bold && echo "Finishing" && tput sgr0
-  cd ${DIR}/mecab > /dev/null
+  cd ${DIR}/mecab
   rm -rf mecab-0.996.tar.gz mecab-0.996 unidic-EMJ_14.zip unidic-EMJ_14
 }
 
 for IDX in $*
 do
   case ${IDX} in
+    --no-progressbar ) CURL_NO_PROGRESSBAR="--silent --show-error" ;;
     [cC]ore[nN][lL][pP] ) install_corenlp ;;
     [mM]e[cC]ab ) install_mecab ;;
     * ) echo "Package '${IDX}' is not available." ;;
