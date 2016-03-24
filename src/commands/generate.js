@@ -92,69 +92,64 @@ export default async function (args) {
   const sources = argv.sources;
   const lang = argv.lang;
   const sentenceSeparator =
-    argv.sentenceSeparator && new RegExp(argv.sentenceSeparator, 'g');
+    argv.sentenceSeparator &&
+    new RegExp(argv.sentenceSeparator, 'g');
   const clauseRegExp =
-    argv.clauseRegExp && new RegExp(argv.clauseRegExp, 'g');
+    argv.clauseRegExp &&
+    new RegExp(argv.clauseRegExp, 'g');
   const wordRegExp =
-    argv.wordRegExp && new RegExp(argv.wordRegExp, 'g');
+    argv.wordRegExp &&
+    new RegExp(argv.wordRegExp, 'g');
   const wordBoundaryRegExp =
-    argv.wordBoundaryRegExp && new RegExp(argv.wordBoundaryRegExp);
+    argv.wordBoundaryRegExp &&
+    new RegExp(argv.wordBoundaryRegExp);
   const abbrRegExp =
-    argv.abbrRegExp && new RegExp(argv.abbrRegExp, 'g');
+    argv.abbrRegExp &&
+    new RegExp(argv.abbrRegExp, 'g');
+
   const generator = new QuizGenerator({
     material, sources, lang, sentenceSeparator, clauseRegExp, wordRegExp,
     wordBoundaryRegExp, abbrRegExp,
   });
-
   await generator.init();
 
   const sections = argv.sections;
   const size = Number(argv.size);
+
+  // generate
   const questions = await generator.quiz({ sections, size });
 
+  // instruction
   console.log(colors.bold(argv.instruction));
+
+  // questions
   questions.forEach((question, i) => {
-    const sentenceParts = [];
-    const _wordRegExp = generator._wordRegExp.source;
-    const blockRegExp = new RegExp(`(${_wordRegExp})(\\s+)?`, 'g');
-    const { sentence, wordIndexes } = question;
-    const divider = argv['skip-spaces'] ? '' : ' ';
-    let currentWordIndex = 0;
-    let prevLastIndex = 0;
-    let matched;
+    const index = i + 1;
+    const decoratedSentence = [];
+    const { body, reference } = question;
+    const skipSpaces = argv['skip-spaces'];
 
-    // Set underlines at target expressions.
+    // Set underlines to question parts.
     // eslint-disable-next-line no-cond-assign
-    while ((matched = blockRegExp.exec(sentence))) {
-      const [, word, hasDivider] = matched;
-      const divider_ = !!hasDivider ? divider : '';
-      const punctuation = sentence.substring(prevLastIndex, matched.index);
-
-      if (wordIndexes[0] === currentWordIndex) {
-        const isSuccessive = (wordIndexes[0] + 1) === wordIndexes[1];
-
-        if (isSuccessive) {
-          sentenceParts.push(`${punctuation}${colors.underline(`${word}${divider_}`)}`);
-        } else {
-          sentenceParts.push(`${punctuation}${colors.underline(word)}${divider_}`);
-        }
-
-        wordIndexes.shift();
-      } else {
-        sentenceParts.push(`${punctuation}${word}${divider_}`);
+    body.forEach(({ text, isQuestionPart, isDivider }) => {
+      if (skipSpaces && isDivider) {
+        return;
       }
 
-      currentWordIndex++;
-      prevLastIndex = blockRegExp.lastIndex;
-    }
+      if (isQuestionPart) {
+        decoratedSentence.push(colors.underline(text));
+      } else {
+        decoratedSentence.push(text);
+      }
+    });
 
-    const stopPunctuation = sentence.substring(prevLastIndex);
-    sentenceParts.push(stopPunctuation);
-
-    console.log(`(${i + 1})\t${sentenceParts.join('')}\t(${question.reference})`);
+    console.log(`(${index})\t${decoratedSentence.join('')}\t(${reference})`);
   });
 
+  // title in answers section
   console.log(colors.bold('\nAnswer Keys'));
+
+  // answers
   questions.forEach((q, i) => {
     console.log(`(${i + 1})\t${q.answer}`);
   });

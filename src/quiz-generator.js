@@ -95,7 +95,6 @@ export default class QuizGenerator {
       }
     }
 
-    log(quiz);
     return quiz;
   }
 
@@ -143,12 +142,72 @@ export default class QuizGenerator {
       return null;
     }
 
+    const body = this.parseQuestionSentence({ sentence, wordIndexes });
+
     return {
-      sentence, wordIndexes,
+      body,
       answer: phrase.answer,
       reference,
       phrase: phrase.phrase,
     };
+  }
+
+  /**
+   * @param {string} original (non-lemmatized) sentence
+   * @param {Array<number>} wordIndexes index numbers representing which word is a part of question.
+   * @return {Array<{ text: string, isQuestionPart: bool, isMark: bool, isDivider: bool }>}
+   */
+  parseQuestionSentence({ sentence, wordIndexes }) {
+    const tokens = [];
+    const tokenRegExp = new RegExp(`(${this._wordRegExp.source})(\\s*)`, 'g');
+    let currentWordIndex = 0;
+    let prevLastIndex = 0;
+    let matched;
+
+    // eslint-disable-next-line no-cond-assign
+    while ((matched = tokenRegExp.exec(sentence))) {
+      const [, token, divider] = matched;
+      const punctuation = sentence.substring(prevLastIndex, matched.index);
+      const isQuestionWord = wordIndexes[0] === currentWordIndex;
+      const isSuccessive =
+        isQuestionWord &&
+        (wordIndexes[0] + 1) === wordIndexes[1];
+
+      if (punctuation) {
+        tokens.push({
+          text: punctuation,
+          isMark: true,
+        });
+      }
+
+      tokens.push({
+        text: token,
+        isQuestionPart: isQuestionWord,
+      });
+      tokens.push({
+        text: divider,
+        isQuestionPart: isSuccessive,
+        isMark: true,
+        isDivider: true,
+      });
+
+      if (isQuestionWord) {
+        wordIndexes.shift();
+      }
+
+      currentWordIndex++;
+      prevLastIndex = tokenRegExp.lastIndex;
+    }
+
+    const stopPunctuation = sentence.substring(prevLastIndex);
+    tokens.push({
+      text: stopPunctuation,
+      isMark: true,
+    });
+
+    log({ tokens });
+
+    return tokens;
   }
 
   /**
@@ -175,9 +234,10 @@ export default class QuizGenerator {
 
     log({
       phrase,
-      src: src.path,
+      src: _.last(src.path.split('/')),
       sentenceIndex,
       lemmatizedSentence,
+      wordIndexes,
     });
 
     return { sentenceIndex, wordIndexes };
@@ -233,15 +293,15 @@ export default class QuizGenerator {
       matches.push({ matched, block, offset, lastIndex });
     });
 
-    log({
-      phraseRegExp,
-      src: src.path,
-      matches,
-    });
-
     if (!matches.length) {
       return null;
     }
+
+    log({
+      phraseRegExp,
+      src: _.last(src.path.split('/')),
+      matches,
+    });
 
     const selected = _.sample(matches);
     const leftText = text.substring(0, selected.offset);

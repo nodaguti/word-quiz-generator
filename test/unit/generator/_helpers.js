@@ -84,14 +84,21 @@ export function testGenerateQuestionFromSource({
           it(`from ${filename}`, async () => {
             const src = generator._sources.find((source) => source.path.endsWith(filename));
             const question = await generator.generateQuestionFromSource({ phrase: phraseObj, src });
-            const words = question.sentence.match(generator._wordRegExp);
 
             assert(question.phrase === phraseObj.phrase);
             assert(question.answer === phraseObj.answer);
 
-            question.wordIndexes.forEach((wordIndex, i) => {
-              assert(words[wordIndex] === expected.words[i]);
-            });
+            const tokens = question.body
+              .filter(({ isQuestionPart, isMark }) =>
+                isQuestionPart && !isMark
+              )
+              .map(({ text }) => text);
+
+            assert(tokens.length === expected.words.length);
+            tokens.forEach((token, index) =>
+              // show `tokens` in a power-assert error message
+              assert(tokens && token === expected.words[index])
+            );
           });
         });
       });
