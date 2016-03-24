@@ -121,7 +121,7 @@ word-quiz-generator coverage --material=<path> --sources=<paths> [--lang] [--sho
 
 ### install
 ```
-word-quiz-generator install <package name> [... <package name>]
+word-quiz-generator install [--silent] <package name> [... <package name>]
 ```
 `install` command will install the dependent binaries under `${package's root}/vendor` that are needed for [preprocessing and lemmatizing](#preprocessing-and-lemmatizing).
 

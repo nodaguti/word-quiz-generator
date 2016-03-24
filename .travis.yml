@@ -11,7 +11,7 @@ env:
 install:
   - nvm install $NODE_VERSION
   - npm install
-  - node lib/cli.js install coreNLP MeCab
+  - node lib/cli.js install --silent coreNLP MeCab
 script:
   - npm test
 after_success:

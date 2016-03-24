@@ -1,3 +1,7 @@
+## 3.1.0
+- node-stanford-corenlp is now installed only when you really need.
+- Add `--silent` option to `install` command.
+
 ## 3.0.0
 ### Breaking Changes
 - Non-space [word divider](https://en.wikipedia.org/wiki/Word_divider) is now properly treated.
