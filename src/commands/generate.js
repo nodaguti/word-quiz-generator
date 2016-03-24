@@ -33,8 +33,6 @@ Generate a quiz and put it to stdout using the given material and sources.
 --instruction
     The instruction text located at top of the quiz.
     Default: 'Write down the meaning of underlined words/phrases.'
---skip-spaces
-    Specify if a language you want to make a quiz has no word divider, such as Japanese and Chinese.
 --sentenceSeparator=<RegExp>
     Regular expression representing a sentence separator.
 --clauseRegExp=<RegExp>
@@ -63,7 +61,6 @@ export default async function (args) {
       'abbrRegExp',
     ],
     boolean: [
-      'skip-spaces',
       'help',
     ],
     alias: {
@@ -127,15 +124,10 @@ export default async function (args) {
     const index = i + 1;
     const decoratedSentence = [];
     const { body, reference } = question;
-    const skipSpaces = argv['skip-spaces'];
 
     // Set underlines to question parts.
     // eslint-disable-next-line no-cond-assign
-    body.forEach(({ text, isQuestionPart, isDivider }) => {
-      if (skipSpaces && isDivider) {
-        return;
-      }
-
+    body.forEach(({ text, isQuestionPart }) => {
       if (isQuestionPart) {
         decoratedSentence.push(colors.underline(text));
       } else {

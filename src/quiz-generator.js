@@ -1,6 +1,7 @@
 import debug from 'debug';
 import _ from 'lodash';
 import RegExpPresets from './constants/regexp-presets';
+import wordDivider from './constants/word-divider';
 import Source from './source.js';
 import {
   fetchFileList,
@@ -159,15 +160,19 @@ export default class QuizGenerator {
    * @return {Array<{ text: string, isQuestionPart: bool, isMark: bool, isDivider: bool }>}
    */
   parseQuestionSentence({ sentence, wordIndexes }) {
-    const tokens = [];
+    // Here we assume word divider is space.
+    // If you are dealing with a language it is not the case (e.g. Japanese),
+    // firstly you have to convert a text using a preprocessor.
     const tokenRegExp = new RegExp(`(${this._wordRegExp.source})(\\s*)`, 'g');
+    const tokens = [];
+    const divider = _.findKey(wordDivider, (regs) => regs.some((reg) => reg.test(this._lang)));
     let currentWordIndex = 0;
     let prevLastIndex = 0;
     let matched;
 
     // eslint-disable-next-line no-cond-assign
     while ((matched = tokenRegExp.exec(sentence))) {
-      const [, token, divider] = matched;
+      const [, token, hasDivider] = matched;
       const punctuation = sentence.substring(prevLastIndex, matched.index);
       const isQuestionWord = wordIndexes[0] === currentWordIndex;
       const isSuccessive =
@@ -185,12 +190,15 @@ export default class QuizGenerator {
         text: token,
         isQuestionPart: isQuestionWord,
       });
-      tokens.push({
-        text: divider,
-        isQuestionPart: isSuccessive,
-        isMark: true,
-        isDivider: true,
-      });
+
+      if (hasDivider && divider) {
+        tokens.push({
+          text: divider,
+          isQuestionPart: isSuccessive,
+          isMark: true,
+          isDivider: true,
+        });
+      }
 
       if (isQuestionWord) {
         wordIndexes.shift();
