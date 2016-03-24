@@ -35,6 +35,9 @@ install_corenlp () {
   mkdir -pv ${DIR}/corenlp
   cd ${DIR}/corenlp > /dev/null
 
+  # Install npm dependencies
+  npm install nodaguti/node-stanford-corenlp#fix-parsed-tree
+
   # Install 3.5.2 instead of 3.6.0 because 3.6.0 cannot be launched due to the lacks of log4j dependency
   echo ""
   tput bold && echo "Downloading Stanford CoreNLP 3.5.2" && tput sgr0
