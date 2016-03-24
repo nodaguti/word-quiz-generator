@@ -61,7 +61,7 @@ export function testSelectSentence({
   }
 }
 
-export function testGetQuestionFromSource({
+export function testGenerateQuestionFromSource({
   generator,
   sources,
   mapPhraseToSource,
@@ -83,7 +83,7 @@ export function testGetQuestionFromSource({
 
           it(`from ${filename}`, async () => {
             const src = generator._sources.find((source) => source.path.endsWith(filename));
-            const question = await generator.getQuestionFromSource({ phrase: phraseObj, src });
+            const question = await generator.generateQuestionFromSource({ phrase: phraseObj, src });
             const words = question.sentence.match(generator._wordRegExp);
 
             assert(question.phrase === phraseObj.phrase);

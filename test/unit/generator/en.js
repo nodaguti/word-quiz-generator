@@ -5,7 +5,7 @@ import Source from '../../../src/source';
 import {
   testGetSentenceAt,
   testSelectSentence,
-  testGetQuestionFromSource,
+  testGenerateQuestionFromSource,
 } from './_helpers';
 
 const sources = {
@@ -165,8 +165,8 @@ const sourcePath = path.resolve(__dirname, '../../fixtures/sources/en/');
       testSelectSentence({ generator, sources, mapPhraseToSource });
     });
 
-    describe('#getQuestionFromSource', () => {
-      testGetQuestionFromSource({ generator, sources, mapPhraseToSource });
+    describe('#generateQuestionFromSource', () => {
+      testGenerateQuestionFromSource({ generator, sources, mapPhraseToSource });
     });
   });
 })();

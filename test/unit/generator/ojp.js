@@ -5,7 +5,7 @@ import Source from '../../../src/source';
 import {
   testGetSentenceAt,
   testSelectSentence,
-  testGetQuestionFromSource,
+  testGenerateQuestionFromSource,
 } from './_helpers';
 
 const materialPath = path.resolve(__dirname, '../../fixtures/materials/ojp.csv');
@@ -104,8 +104,8 @@ const mapPhraseToSource = {
       testSelectSentence({ generator, sources, mapPhraseToSource });
     });
 
-    describe('#getQuestionFromSource', () => {
-      testGetQuestionFromSource({ generator, sources, mapPhraseToSource });
+    describe('#generateQuestionFromSource', () => {
+      testGenerateQuestionFromSource({ generator, sources, mapPhraseToSource });
     });
   });
 })();

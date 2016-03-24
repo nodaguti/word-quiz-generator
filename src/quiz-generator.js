@@ -109,7 +109,7 @@ export default class QuizGenerator {
 
     while (sources.length > 0) {
       const src = sources.pop();
-      const question = await this.getQuestionFromSource({ phrase, src });
+      const question = await this.generateQuestionFromSource({ phrase, src });
 
       if (!question) {
         continue;
@@ -127,27 +127,28 @@ export default class QuizGenerator {
    * @param {Source} src
    * @return {Question}
    */
-  async getQuestionFromSource({ phrase, src }) {
-    const { sentenceIndex, wordIndexes }
-      = await this.selectSentence({ phrase: phrase.phrase, src });
+  async generateQuestionFromSource({ phrase, src }) {
+    const result = await this.selectSentence({ phrase: phrase.phrase, src });
 
-    if (sentenceIndex !== undefined) {
-      const text = await src.preprocessed.getText();
-      const reference = await src.preprocessed.getReference();
-      const sentence = this.getSentenceAt({ index: sentenceIndex, text });
-
-      if (!sentence) {
-        return null;
-      }
-
-      return {
-        phrase: phrase.phrase,
-        answer: phrase.answer,
-        sentence, wordIndexes, reference,
-      };
+    if (!result) {
+      return null;
     }
 
-    return null;
+    const { sentenceIndex, wordIndexes } = result;
+    const text = await src.preprocessed.getText();
+    const reference = await src.preprocessed.getReference();
+    const sentence = this.getSentenceAt({ index: sentenceIndex, text });
+
+    if (!sentence) {
+      return null;
+    }
+
+    return {
+      sentence, wordIndexes,
+      answer: phrase.answer,
+      reference,
+      phrase: phrase.phrase,
+    };
   }
 
   /**
@@ -157,59 +158,35 @@ export default class QuizGenerator {
    * @return {{ sentenceIndex: number, wordIndexes: Array<number> }}
    */
   async selectSentence({ phrase, src }) {
-    const text = await src.lemmatized.getText();
-    const phraseWithAbbrRegExp = phrase.replace(
-      this._abbrRegExp,
-      `?(?:${this._clauseRegExp.source})?`
-    );
-    const wordBoundaryRegExp = this._wordBoundaryRegExp.source;
-    const phraseRegExp = new RegExp(
-      `(?:^|${wordBoundaryRegExp})(${phraseWithAbbrRegExp})${wordBoundaryRegExp}`,
-      'gim'
-    );
-    const matches = [];
+    const result = await this.findSentenceIncludingPhrase({ phrase, src });
 
-    // Find the phrase in the source text
-    // and store the match information.
-    // We use 'replace' here because nether RegExp#exec nor String#match
-    // have a detail of each matches like a matched block and an offset etc.
-    text.replace(phraseRegExp, (matched, block, offset) => {
-      const lastIndex = offset + matched.length;
-      matches.push({ matched, block, offset, lastIndex });
-    });
-
-    log({
-      phrase,
-      src: src.path,
-      phraseRegExp,
-      matches,
-    });
-
-    if (!matches.length) {
-      return {};
+    if (!result) {
+      return null;
     }
 
-    const selected = _.sample(matches);
-    const leftText = text.substring(0, selected.offset);
-    const leftSentences = leftText.match(this._sentenceSeparator) || [];
-    const leftContext = _.last(
-      leftText.split(this._sentenceSeparator)
-    );
-    const rightContext = _.head(
-      text.substring(selected.lastIndex)
-        .split(this._sentenceSeparator)
-    );
-    const sentence = leftContext + selected.matched + rightContext;
-    const sentenceIndex = leftSentences.length;
-    const wordIndexes = [];
+    const {
+      lemmatizedSentence,
+      index: sentenceIndex,
+    } = result;
+    const wordIndexes = this.findWordIndexesWithinLemmatizedSentence({
+      lemmatizedSentence,
+      phrase,
+    });
 
     log({
       phrase,
       src: src.path,
-      selected,
       sentenceIndex,
-      sentence,
+      lemmatizedSentence,
     });
+
+    return { sentenceIndex, wordIndexes };
+  }
+
+  findWordIndexesWithinLemmatizedSentence({ lemmatizedSentence, phrase }) {
+    const sentence = lemmatizedSentence;
+    const phraseRegExp = this.getPhraseRegExp(phrase);
+    const wordIndexes = [];
 
     sentence.replace(phraseRegExp, (matched, block, offset) => {
       const left = sentence.substring(0, offset);
@@ -239,7 +216,61 @@ export default class QuizGenerator {
       });
     });
 
-    return { sentenceIndex, wordIndexes };
+    return wordIndexes;
+  }
+
+  async findSentenceIncludingPhrase({ src, phrase }) {
+    const text = await src.lemmatized.getText();
+    const phraseRegExp = this.getPhraseRegExp(phrase);
+    const matches = [];
+
+    // Find the phrase in the source text
+    // and store the match information.
+    // We use 'replace' here because nether RegExp#exec nor String#match
+    // have a detail of each matches like a matched block and an offset etc.
+    text.replace(phraseRegExp, (matched, block, offset) => {
+      const lastIndex = offset + matched.length;
+      matches.push({ matched, block, offset, lastIndex });
+    });
+
+    log({
+      phraseRegExp,
+      src: src.path,
+      matches,
+    });
+
+    if (!matches.length) {
+      return null;
+    }
+
+    const selected = _.sample(matches);
+    const leftText = text.substring(0, selected.offset);
+    const leftSentences = leftText.match(this._sentenceSeparator) || [];
+    const leftContext = _.last(
+      leftText.split(this._sentenceSeparator)
+    );
+    const rightContext = _.head(
+      text.substring(selected.lastIndex)
+        .split(this._sentenceSeparator)
+    );
+    const lemmatizedSentence = leftContext + selected.matched + rightContext;
+    const index = leftSentences.length;
+
+    return { lemmatizedSentence, index };
+  }
+
+  getPhraseRegExp(phrase) {
+    const phraseWithAbbrRegExp = phrase.replace(
+      this._abbrRegExp,
+      `?(?:${this._clauseRegExp.source})?`
+    );
+    const wordBoundaryRegExp = this._wordBoundaryRegExp.source;
+    const phraseRegExp = new RegExp(
+      `(?:^|${wordBoundaryRegExp})(${phraseWithAbbrRegExp})${wordBoundaryRegExp}`,
+      'gim'
+    );
+
+    return phraseRegExp;
   }
 
   /**
