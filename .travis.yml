@@ -9,9 +9,9 @@ env:
     - CC=clang
     - CXX=clang++
 install:
-  - nvm install $NODE_VERSION
+  - nvm install $NODE_VERSION > /dev/null 2>&1
   - npm install
-  - node lib/cli.js install --silent coreNLP MeCab
+  - node lib/cli.js install --no-progressbar coreNLP MeCab
 script:
   - npm test
 after_success:
