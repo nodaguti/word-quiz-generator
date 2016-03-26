@@ -23,12 +23,14 @@ export default async function (text) {
 
     for (const sentence of chunk) {
       const parsed = await mecab.parse(sentence);
-      const lemmatized = parsed.map((word) =>
-        // '*' means there is no lemma data for this word.
-        word[MECAB_LEMMA] && word[MECAB_LEMMA] !== '*' ?
-          word[MECAB_LEMMA] :
-          word[MECAB_WORD]
-      ).join(' ');
+      const lemmatized = parsed
+        .map((word) => (
+          // '*' means there is no lemma data for this word.
+          word[MECAB_LEMMA] && word[MECAB_LEMMA] !== '*' ?
+            word[MECAB_LEMMA] :
+            word[MECAB_WORD]
+        ))
+        .join(' ');
 
       results.push(lemmatized);
     }
