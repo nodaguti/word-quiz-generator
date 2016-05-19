@@ -7,7 +7,7 @@
   "bugs": "https://github.com/nodaguti/word-quiz-generator/issues",
   "dependencies": {
     "colors": "^1.1.2",
-    "csv": "^0.4.6",
+    "csv": "^1.1.0",
     "debug": "^2.2.0",
     "fs-extra-promise": "^0.3.1",
     "lodash": "^4.6.1",
