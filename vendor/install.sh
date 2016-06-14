@@ -37,7 +37,7 @@ install_corenlp () {
   cd ${DIR}/corenlp
 
   # Install npm dependencies
-  npm install nodaguti/node-stanford-corenlp#fix-parsed-tree
+  npm install stanford-corenlp
 
   # Install 3.5.2 instead of 3.6.0 because 3.6.0 cannot be launched due to the lacks of log4j dependency
   echo ""
