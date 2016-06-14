@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console, global-require */
 import 'source-map-support/register';
 import path from 'path';
 import _ from 'lodash';

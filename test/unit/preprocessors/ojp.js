@@ -19,11 +19,7 @@ const rightBrackets = {
 
 describe('Old Japanese preprocessor', () => {
   it('can remove annotations', async () => {
-    for (const key in leftBrackets) {
-      if (!leftBrackets.hasOwnProperty(key)) {
-        return;
-      }
-
+    await Object.keys(leftBrackets).map((key) => async () => {
       const lefts = leftBrackets[key];
       const rights = rightBrackets[key];
 
@@ -36,15 +32,11 @@ describe('Old Japanese preprocessor', () => {
           });
         }
       }
-    }
+    });
   });
 
   it('can remove nested annotations', async () => {
-    for (const key in leftBrackets) {
-      if (!leftBrackets.hasOwnProperty(key)) {
-        return;
-      }
-
+    await Object.keys(leftBrackets).map((key) => async () => {
       const lefts = leftBrackets[key];
       const rights = rightBrackets[key];
 
@@ -61,15 +53,11 @@ describe('Old Japanese preprocessor', () => {
           }
         }
       }
-    }
+    });
   });
 
   it('can remove broken nested annotations', async () => {
-    for (const key in leftBrackets) {
-      if (!leftBrackets.hasOwnProperty(key)) {
-        return;
-      }
-
+    await Object.keys(leftBrackets).map((key) => async () => {
       const lefts = leftBrackets[key];
       const rights = rightBrackets[key];
 
@@ -94,7 +82,7 @@ describe('Old Japanese preprocessor', () => {
           }
         }
       }
-    }
+    });
   });
 
   it('can un-odorijify simple repeat marks', async () => {

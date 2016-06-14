@@ -150,6 +150,7 @@ Legend: ${'#'.grey} phrase ${'answer'.grey} ${'reference'.green} ${'lemmas'.red}
 -----
 `);
 
+    // eslint-disable-next-line global-require
     const lemmatizer = require(`../lemmatizers/${argv.lang}.js`).default;
     const findWithinOriginals = async (phrase) => {
       for (const source of generator._sources) {

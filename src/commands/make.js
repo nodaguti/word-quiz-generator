@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable no-console, global-require */
 import path from 'path';
 import minimist from 'minimist';
 import fs from 'fs-extra-promise';
