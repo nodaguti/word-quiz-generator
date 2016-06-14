@@ -25,6 +25,9 @@ export default async function (text) {
     // Remove unnecessary line breaks.
     .replace(/[\n\r]+/g, ' ')
 
+    // Shorten repeating whitespaces.
+    .replace(/ +/g, ' ')
+
     // Remove soft hyphens.
     .replace(/(\w)-\s+(\w)/g, '$1$2')
 

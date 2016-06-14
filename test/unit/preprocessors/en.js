@@ -15,6 +15,14 @@ abc`,
     });
   });
 
+  it('can shorten repeating whitespaces into a single space', async () => {
+    await assertOutput({
+      func: preprocessor,
+      input: 'a      b  c',
+      expected: 'a b c',
+    });
+  });
+
   it('can remove soft hyphens', async () => {
     await assertOutput({
       func: preprocessor,
