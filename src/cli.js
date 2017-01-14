@@ -1,8 +1,8 @@
-/* eslint-disable no-console, global-require */
+/* eslint-disable no-console, global-require, import/no-dynamic-require */
 import 'source-map-support/register';
 import path from 'path';
 import _ from 'lodash';
-import { fetchFileList } from './utils.js';
+import { fetchFileList } from './utils';
 
 (async () => {
   const ls = await fetchFileList(path.join(__dirname, 'commands'), /\.js$/);

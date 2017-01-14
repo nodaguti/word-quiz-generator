@@ -19,70 +19,79 @@ const rightBrackets = {
 
 describe('Old Japanese preprocessor', () => {
   it('can remove annotations', async () => {
-    await Object.keys(leftBrackets).map((key) => async () => {
+    await Object.keys(leftBrackets).map((key) => (async () => {
       const lefts = leftBrackets[key];
       const rights = rightBrackets[key];
+      const tests = [];
 
-      for (const left of lefts) {
-        for (const right of rights) {
-          await assertOutput({
+      lefts.forEach((left) => {
+        rights.forEach((right) => {
+          tests.push(assertOutput({
             func: preprocessor,
             input: `あ${left}い${right}う`,
             expected: 'あう',
-          });
-        }
-      }
-    });
+          }));
+        });
+      });
+
+      await Promise.all(tests);
+    })());
   });
 
   it('can remove nested annotations', async () => {
-    await Object.keys(leftBrackets).map((key) => async () => {
+    await Object.keys(leftBrackets).map((key) => (async () => {
       const lefts = leftBrackets[key];
       const rights = rightBrackets[key];
+      const tests = [];
 
-      for (const outerLeft of lefts) {
-        for (const innerLeft of lefts) {
-          for (const outerRight of rights) {
-            for (const innerRight of rights) {
-              await assertOutput({
+      lefts.forEach((outerLeft) => {
+        lefts.forEach((innerLeft) => {
+          rights.forEach((outerRight) => {
+            rights.forEach((innerRight) => {
+              tests.push(assertOutput({
                 func: preprocessor,
                 input: `あ${outerLeft}い${innerLeft}う${innerRight}え${outerRight}お`,
                 expected: 'あお',
-              });
-            }
-          }
-        }
-      }
-    });
+              }));
+            });
+          });
+        });
+      });
+
+      await Promise.all(tests);
+    })());
   });
 
-  it('can remove broken nested annotations', async () => {
-    await Object.keys(leftBrackets).map((key) => async () => {
+  it('can remove unbalanced nested annotations', async () => {
+    await Object.keys(leftBrackets).map((key) => (async () => {
       const lefts = leftBrackets[key];
       const rights = rightBrackets[key];
+      const tests = [];
 
-      for (const outerLeft of lefts) {
-        for (const innerLeft of lefts) {
-          for (const outerRight of rights) {
-            for (const innerRight of rights) {
-              // too many lefts
-              await assertOutput({
+      lefts.forEach((outerLeft) => {
+        lefts.forEach((innerLeft) => {
+          rights.forEach((outerRight) => {
+            rights.forEach((innerRight) => {
+              // too many left brackets
+              tests.push(assertOutput({
                 func: preprocessor,
                 input: `あ${outerLeft}い${innerLeft}う${innerRight}あい`,
                 expected: 'ああ い',
-              });
+              }));
 
-              // too many rights
-              await assertOutput({
+              // too many right brackets
+              tests.push(assertOutput({
                 func: preprocessor,
                 input: `あい${innerLeft}う${innerRight}あ${outerRight}い`,
                 expected: 'あいあい',
-              });
-            }
-          }
-        }
-      }
-    });
+              }));
+            });
+          });
+        });
+      });
+
+      await Promise.all(tests);
+    })());
   });
 
   it('can un-odorijify simple repeat marks', async () => {

@@ -3,7 +3,7 @@ import minimist from 'minimist';
 import colors from 'colors';
 import pad from 'pad/lib/colors';
 import ProgressBar from 'progress';
-import QuizGenerator from '../quiz-generator.js';
+import QuizGenerator from '../quiz-generator';
 
 const showUsage = () => {
   console.log(
@@ -101,8 +101,14 @@ export default async function (args) {
   const abbrRegExp =
     argv.abbrRegExp && new RegExp(argv.abbrRegExp, 'g');
   const generator = new QuizGenerator({
-    material, sources, lang, sentenceSeparator, clauseRegExp, wordRegExp,
-    wordBoundaryRegExp, abbrRegExp,
+    material,
+    sources,
+    lang,
+    sentenceSeparator,
+    clauseRegExp,
+    wordRegExp,
+    wordBoundaryRegExp,
+    abbrRegExp,
   });
 
   await generator.init();
@@ -117,18 +123,19 @@ export default async function (args) {
     total: phrases.length,
   });
 
-  while (phrases.length) {
-    const phrase = phrases.shift();
-    const question = await generator.question(phrase);
+  const promises = phrases.map((phrase) => (async () => {
+    const isCovered = !!(await generator.question(phrase));
 
-    if (!question) {
+    if (!isCovered) {
       uncovered.push(phrase);
     }
 
     progress.tick();
-  }
+  })());
 
-  const coverage = (total - uncovered.length) * 100 / total;
+  await Promise.all(promises);
+
+  const coverage = ((total - uncovered.length) * 100) / total;
 
   console.log(colors.bold(`Coverage: ${coverage.toFixed(2)}%`));
 
@@ -150,44 +157,45 @@ Legend: ${'#'.grey} phrase ${'answer'.grey} ${'reference'.green} ${'lemmas'.red}
 -----
 `);
 
-    // eslint-disable-next-line global-require
+    // eslint-disable-next-line global-require, import/no-dynamic-require
     const lemmatizer = require(`../lemmatizers/${argv.lang}.js`).default;
-    const findWithinOriginals = async (phrase) => {
-      for (const source of generator._sources) {
-        const text = await source.getText();
+    const lookUpOriginalSources = (phrase) =>
+      new Promise((resolve) => {
+        Promise.all(generator._sources.map((source) => (async () => {
+          const text = await source.getText();
 
-        if (phrase.split('|').some((exp) => text.includes(exp))) {
-          return source;
-        }
-      }
+          if (phrase.split('|').some((exp) => text.includes(exp))) {
+            resolve(source);
+          }
+        })())).then(() => resolve(null));
+      });
 
-      return null;
-    };
+    uncovered.forEach((phrase) => (async () => {
+      const [reference, lemma] = await Promise.all([
+        (async () => {
+          const source = await lookUpOriginalSources(phrase.phrase);
+          const ref = source ? (await source.getReference()) : '';
 
-    for (const phrase of uncovered) {
-      const source = await findWithinOriginals(phrase.phrase);
+          return ref;
+        })(),
+        (async () => {
+          if (!argv['display-lemmas']) {
+            return Promise.resolve('');
+          }
+
+          return lemmatizer(phrase.phrase);
+        })(),
+      ]);
+
       const message = [];
 
       message.push(pad(2, colors.grey(phrase.section)));
       message.push(pad(phrase.phrase, 20));
       message.push(pad(colors.grey(phrase.answer), 20));
-
-      if (source) {
-        const ref = await source.getReference();
-        message.push(pad(colors.green(ref), 10));
-      } else {
-        message.push(pad('', 10));
-      }
-
-      if (argv['display-lemmas']) {
-        const lemma = await lemmatizer(phrase.phrase);
-
-        if (lemma !== phrase.phrase) {
-          message.push(colors.red(lemma));
-        }
-      }
+      message.push(pad(colors.green(reference), 10));
+      message.push(colors.red(lemma));
 
       console.log(message.join(' '));
-    }
+    })());
   }
 }

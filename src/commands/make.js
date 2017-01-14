@@ -1,9 +1,9 @@
-/* eslint-disable no-console, global-require */
+/* eslint-disable no-console, global-require, import/no-dynamic-require */
 import path from 'path';
 import minimist from 'minimist';
 import fs from 'fs-extra-promise';
-import Source from '../source.js';
-import { fetchFileList } from '../utils.js';
+import Source from '../source';
+import { fetchFileList } from '../utils';
 
 const showUsage = () => {
   console.log(
@@ -60,10 +60,7 @@ function getLemmatizer(argv) {
 
 async function clean(dir) {
   const files = await fetchFileList(dir, /\.(?:preprocessed|lemmatized)$/);
-
-  for (const _path of files) {
-    await fs.removeAsync(_path);
-  }
+  await Promise.all(files.map((_path) => fs.removeAsync(_path)));
 }
 
 export default async function (args) {
@@ -107,23 +104,21 @@ export default async function (args) {
   const lemmatizer = getLemmatizer(argv);
   const files = await fetchFileList(argv.src, /\.txt$/);
 
-  for (const _path of files) {
-    console.log(_path);
-
+  files.forEach((_path) => (async () => {
     try {
       const source = new Source(_path);
 
       if (preprocessor) {
-        console.log('Preprocessing...');
         await source.preprocess(preprocessor);
+        console.log(`Finish preprocessing: ${_path}`);
       }
 
       if (lemmatizer) {
-        console.log('Lemmatizing...');
         await source.lemmatize(lemmatizer);
+        console.log(`Finish lemmatizing: ${_path}`);
       }
     } catch (ex) {
       console.error(ex.stack);
     }
-  }
+  })());
 }

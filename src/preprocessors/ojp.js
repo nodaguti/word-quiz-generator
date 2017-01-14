@@ -1,6 +1,6 @@
 import path from 'path';
 import XRegExp from 'xregexp';
-import MeCab from '../mecab.js';
+import MeCab from '../mecab';
 
 const MECAB_WORD = 0;
 const mecabHome = path.join(__dirname, '..', '..', 'vendor', 'mecab');
@@ -17,29 +17,25 @@ function toVoicedChar(char) {
 }
 
 /**
- * Apply transformer to every tokens extracted from a text by Mecab
+ * Apply transformer to every tokens extracted from a text using Mecab
  * @param {string} text a target text
  * @param {Function<Promise<string>>} transformer
  * @return {string} transformed text
  */
 async function transform(text, transformer) {
-  const chunks = text.split(/\n/).map((block) => block.split(/。/));
-  const results = [];
+  const paragraphs = text.split(/\n/);
 
-  for (const chunk of chunks) {
-    const result = [];
-
-    for (const sentence of chunk) {
+  const appliedParagraphs = paragraphs.map((paragraph) => (async () => {
+    const sentences = paragraph.split('。');
+    const appliedSentences = sentences.map((sentence) => (async () => {
       const parsed = await mecab.parse(sentence);
-      const transformed = parsed.map(transformer);
+      return parsed.map(transformer).join('');
+    })());
 
-      result.push(transformed.join(''));
-    }
+    return Promise.all(appliedSentences).then((results) => results.join('。'));
+  })());
 
-    results.push(result.join('。'));
-  }
-
-  return results.join('\n');
+  return Promise.all(appliedParagraphs).then((results) => results.join('\n'));
 }
 
 function removeAnnotations(text) {
@@ -141,7 +137,7 @@ export default async function (text) {
       if (prev.length >= 2) {
         return word.replace(
           /〲/,
-          `${toVoicedChar(prev[0])}${prev.substring(1)}`
+          `${toVoicedChar(prev[0])}${prev.substring(1)}`,
         );
       }
     }
@@ -153,7 +149,7 @@ export default async function (text) {
   // Separate each words with a half-width space (wakachigaki)
   // to enable QuizGenerator to detect word boundaries easily.
   const wakachigaki = await transform(unodorijified, (table) =>
-    `${table[MECAB_WORD]} `
+    `${table[MECAB_WORD]} `,
   );
 
   // --- Remove trailing spaces

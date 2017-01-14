@@ -2,11 +2,11 @@ import debug from 'debug';
 import _ from 'lodash';
 import RegExpPresets from './constants/regexp-presets';
 import wordDivider from './constants/word-divider';
-import Source from './source.js';
+import Source from './source';
 import {
   fetchFileList,
   parseMaterial,
-} from './utils.js';
+} from './utils';
 
 const log = debug('word-quiz-generator');
 
@@ -77,55 +77,68 @@ export default class QuizGenerator {
    * @param {string} sections "-" separated string
    *                          representing a scope of the quiz.
    *                          e.g. 5-10
-   * @param {number} size # of questions in the quiz.
+   * @param {number} size # of questions in a quiz to generate.
    * @return {Array<Question>} Generated quiz.
    */
   async quiz({ sections, size }) {
     const [min = 0, max] = sections.split('-').map((num) => Number(num));
     const phrasesToTest = _.shuffle(this._phrases.filter((phrase) =>
-      _.inRange(phrase.section, min, (max || min) + 1)
+      _.inRange(phrase.section, min, (max || min) + 1),
     ));
     const quiz = [];
 
-    while (quiz.length < size && phrasesToTest.length > 0) {
-      const phrase = phrasesToTest.pop();
-      const question = await this.question(phrase);
+    const chunks = _.chunk(phrasesToTest, size);
 
-      if (question) {
-        quiz.push(question);
-      }
-    }
+    await new Promise((resolve) => {
+      chunks.reduce((promise, chunk) =>
+        promise.then(() => {
+          if (quiz.length >= size) {
+            return Promise.resolve();
+          }
 
-    return quiz;
+          return Promise.all(chunk.map((phrase) => (async () => {
+            const question = await this.question(phrase);
+
+            if (question) {
+              quiz.push(question);
+            }
+
+            if (quiz.length >= size) {
+              resolve();
+            }
+          })()));
+        }),
+        Promise.resolve(),
+      ).then(() => resolve());
+    });
+
+    return _.take(quiz, size);
   }
 
   /**
    * Generate a question using the given phrase.
    * @param {{phrase, answer, reference}} phrase
-   * @return {Question}
+   * @return {Question|null}
    */
   async question(phrase) {
     const sources = _.shuffle(this._sources);
 
-    while (sources.length > 0) {
-      const src = sources.pop();
-      const question = await this.generateQuestionFromSource({ phrase, src });
+    return new Promise((resolve) => {
+      Promise.all(sources.map((src) => (async () => {
+        const question = await this.generateQuestionFromSource({ phrase, src });
 
-      if (!question) {
-        continue;
-      }
-
-      return question;
-    }
-
-    return null;
+        if (question) {
+          resolve(question);
+        }
+      })())).then(() => resolve(null));
+    });
   }
 
   /**
    * Generate a question using the given phrase and source.
    * @param {{phrase, answer, reference}} phrase
    * @param {Source} src
-   * @return {Question}
+   * @return {Question|null}
    */
   async generateQuestionFromSource({ phrase, src }) {
     const result = await this.selectSentence({ phrase: phrase.phrase, src });
@@ -204,7 +217,7 @@ export default class QuizGenerator {
         wordIndexes.shift();
       }
 
-      currentWordIndex++;
+      currentWordIndex += 1;
       prevLastIndex = tokenRegExp.lastIndex;
     }
 
@@ -265,8 +278,8 @@ export default class QuizGenerator {
           .split('|')
           .map((exp) =>
             exp.replace(this._abbrRegExp, '')
-              .match(this._wordRegExp) || []
-          )
+              .match(this._wordRegExp) || [],
+        ),
       );
       let wordsCount = words.length;
       const escapedWords = words.map((word) => word.replace(/\W/g, '\\$&')).join('|');
@@ -281,7 +294,7 @@ export default class QuizGenerator {
         const inlineIndex = (inlineLeft.match(this._wordRegExp) || []).length;
 
         wordIndexes.push(indexOffset + inlineIndex);
-        wordsCount--;
+        wordsCount -= 1;
       });
     });
 
@@ -316,11 +329,11 @@ export default class QuizGenerator {
     const leftText = text.substring(0, selected.offset);
     const leftSentences = leftText.match(this._sentenceSeparator) || [];
     const leftContext = _.last(
-      leftText.split(this._sentenceSeparator)
+      leftText.split(this._sentenceSeparator),
     );
     const rightContext = _.head(
       text.substring(selected.lastIndex)
-        .split(this._sentenceSeparator)
+        .split(this._sentenceSeparator),
     );
     const lemmatizedSentence = leftContext + selected.matched + rightContext;
     const index = leftSentences.length;
@@ -331,12 +344,12 @@ export default class QuizGenerator {
   getPhraseRegExp(phrase) {
     const phraseWithAbbrRegExp = phrase.replace(
       this._abbrRegExp,
-      `?(?:${this._clauseRegExp.source})?`
+      `?(?:${this._clauseRegExp.source})?`,
     );
     const wordBoundaryRegExp = this._wordBoundaryRegExp.source;
     const phraseRegExp = new RegExp(
       `(?:^|${wordBoundaryRegExp})(${phraseWithAbbrRegExp})${wordBoundaryRegExp}`,
-      'gim'
+      'gim',
     );
 
     return phraseRegExp;

@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import assert from 'power-assert';
+import assert from 'assert';
 import _ from 'lodash';
 
 export function testGetSentenceAt({
@@ -90,14 +90,14 @@ export function testGenerateQuestionFromSource({
 
             const tokens = question.body
               .filter(({ isQuestionPart, isMark }) =>
-                isQuestionPart && !isMark
+                isQuestionPart && !isMark,
               )
               .map(({ text }) => text);
 
             assert(tokens.length === expected.words.length);
             tokens.forEach((token, index) =>
               // show `tokens` in a power-assert error message
-              assert(tokens && token === expected.words[index])
+              assert(tokens && token === expected.words[index]),
             );
           });
         });

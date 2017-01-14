@@ -1,4 +1,4 @@
-import assert from 'power-assert';
+import assert from 'assert';
 import path from 'path';
 import QuizGenerator from '../../../src/quiz-generator';
 import Source from '../../../src/source';
@@ -34,7 +34,7 @@ const sourcePath = path.resolve(__dirname, '../../fixtures/sources/en/');
         assert(question.answer === phraseObj.answer);
       });
 
-      it('returns a question for a word which is contained in a only source', async () => {
+      it('returns a question for a word which is contained in only one source', async () => {
         const phraseObj = {
           phrase: 'Tarnovo',
           answer: 'Tarnovo (answer)',

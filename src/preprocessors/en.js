@@ -1,6 +1,10 @@
 import path from 'path';
-import NLP from 'stanford-corenlp';
 import _ from 'lodash';
+
+// Installing stanford-corenlp is not necessary if you won't use this module,
+// so it is not listed in package.json.
+// eslint-disable-next-line import/no-extraneous-dependencies
+import NLP from 'stanford-corenlp';
 
 const coreNLP = new NLP.StanfordNLP({
   nlpPath: path.join(__dirname, '../../vendor/corenlp/corenlp'),
@@ -37,21 +41,20 @@ export default async function (text) {
     .replace(/—/g, '--');
 
   const result = await processWithCoreNLP(emended);
-  const sentences = [];
 
   // there is just one sentence and don't need to split it!
   if (!Array.isArray(result.document.sentences.sentence)) {
     return emended;
   }
 
-  for (const sentenceData of result.document.sentences.sentence) {
+  const sentences = result.document.sentences.sentence.map((sentenceData) => {
     const coreNLPToken = sentenceData.tokens.token;
     const tokens = Array.isArray(coreNLPToken) ? coreNLPToken : [coreNLPToken];
     const begin = _.first(tokens).CharacterOffsetBegin;
     const end = _.last(tokens).CharacterOffsetEnd;
 
-    sentences.push(emended.slice(begin, end));
-  }
+    return emended.slice(begin, end);
+  });
 
   return sentences.join('\n');
 }

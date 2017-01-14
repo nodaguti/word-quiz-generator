@@ -1,5 +1,9 @@
 /* eslint-disable no-console */
 import path from 'path';
+
+// Installing stanford-corenlp is not necessary if you won't use this module,
+// so it is not listed in package.json.
+// eslint-disable-next-line import/no-extraneous-dependencies
 import NLP from 'stanford-corenlp';
 
 const coreNLP = new NLP.StanfordNLP({
@@ -106,14 +110,13 @@ async function lemmatize(sentence) {
 }
 
 export default async function (text) {
-  // Assume that all sentences are separated by a line break.
+  // Assuming that all sentences are separated by a line break.
   const sentences = text.split('\n');
-  const results = [];
+  const lemmatized = [];
 
-  for (const sentence of sentences) {
-    const lemmatized = await lemmatize(sentence);
-    results.push(lemmatized);
-  }
+  sentences.forEach((sentence) => {
+    lemmatized.push(lemmatize(sentence));
+  });
 
-  return results.join('\n');
+  return Promise.all(lemmatized).then((results) => results.join('\n'));
 }

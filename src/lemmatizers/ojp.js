@@ -1,8 +1,8 @@
 /**
  * Lemmatizer for Classical Japanese using MeCab
  */
-import MeCab from '../mecab.js';
 import path from 'path';
+import MeCab from '../mecab';
 
 const MECAB_WORD = 0;
 const MECAB_LEMMA = 13;
@@ -12,31 +12,26 @@ const rcPath = path.join(mecabHome, 'unidic-ojp', '.mecabrc-ojp');
 const mecab = new MeCab({ command: `${mecabPath} --rcfile=${rcPath}` });
 
 export default async function (text) {
-  const chunks = text
-    .replace(/ /g, '')
-    .split(/\n/)
-    .map((block) => block.split(/。/));
-  const lemmatizedChunks = [];
+  const paragraphs = text.replace(/ /g, '').split(/\n/);
 
-  for (const chunk of chunks) {
-    const results = [];
+  const lemmatizedParagraphs = paragraphs.map((paragraph) => (async () => {
+    const sentences = paragraph.split('。');
 
-    for (const sentence of chunk) {
+    const lemmatizedSentences = sentences.map((sentence) => (async () => {
       const parsed = await mecab.parse(sentence);
-      const lemmatized = parsed
+      const lemmatizedTokens = parsed
         .map((word) => (
           // '*' means there is no lemma data for this word.
           word[MECAB_LEMMA] && word[MECAB_LEMMA] !== '*' ?
             word[MECAB_LEMMA] :
             word[MECAB_WORD]
-        ))
-        .join(' ');
+        ));
 
-      results.push(lemmatized);
-    }
+      return lemmatizedTokens.join(' ');
+    })());
 
-    lemmatizedChunks.push(results.join(' 。 '));
-  }
+    return Promise.all(lemmatizedSentences).then((results) => results.join(' 。 '));
+  })());
 
-  return lemmatizedChunks.join('\n');
+  return Promise.all(lemmatizedParagraphs).then((results) => results.join('\n'));
 }

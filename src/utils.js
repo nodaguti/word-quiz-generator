@@ -38,19 +38,17 @@ export const fetchFileList = (paths, pattern = /(?:)/) =>
     paths.split(',').map((p) => (async () => {
       const ap = path.resolve(p);
       const stat = await fs.statAsync(ap);
-      let result = [];
 
       if (stat.isDirectory()) {
         const ls = await fs.readdirAsync(ap);
         const arg = ls.map((name) => path.join(ap, name)).join(',');
-        const list = await fetchFileList(arg, pattern);
-        result = result.concat(list);
-      } else {
-        if (pattern.test(ap)) {
-          result.push(path.resolve(ap));
-        }
+        return fetchFileList(arg, pattern);
       }
 
-      return result;
-    })())
+      if (pattern.test(ap)) {
+        return path.resolve(ap);
+      }
+
+      return [];
+    })()),
   ).then((lists) => flatten(lists));

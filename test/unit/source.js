@@ -1,9 +1,9 @@
-import assert from 'power-assert';
+import assert from 'assert';
 import path from 'path';
 import fs from 'fs-extra-promise';
-import Source from '../../src/source.js';
-import preprocessor from '../../src/preprocessors/en.js';
-import lemmatizer from '../../src/lemmatizers/en.js';
+import Source from '../../src/source';
+import preprocessor from '../../src/preprocessors/en';
+import lemmatizer from '../../src/lemmatizers/en';
 
 const existedPath = path.resolve(__dirname, '../fixtures/sources/dummy/test.txt');
 const notExistedPath = path.resolve(__dirname, '../fixtures/sources/dummy/not-existed.dummy');

@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import minimist from 'minimist';
 import colors from 'colors';
-import QuizGenerator from '../quiz-generator.js';
+import QuizGenerator from '../quiz-generator';
 
 const showUsage = () => {
   console.log(
@@ -105,8 +105,14 @@ export default async function (args) {
     new RegExp(argv.abbrRegExp, 'g');
 
   const generator = new QuizGenerator({
-    material, sources, lang, sentenceSeparator, clauseRegExp, wordRegExp,
-    wordBoundaryRegExp, abbrRegExp,
+    material,
+    sources,
+    lang,
+    sentenceSeparator,
+    clauseRegExp,
+    wordRegExp,
+    wordBoundaryRegExp,
+    abbrRegExp,
   });
   await generator.init();
 
