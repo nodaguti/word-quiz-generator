@@ -9,7 +9,7 @@ const showUsage = () => {
   console.log(
 `word-quiz-generator coverage --help
 word-quiz-generator coverage --material=<path> --sources=<paths> [--lang]
-                             [--display-details] [--display-lemmas]
+                             [--show-details] [--show-lemma]
                              [--sentenceSeparator=<RegExp>] [--clauseRegExp=<RegExp>]
                              [--wordRegExp=<RegExp>] [--wordBoundaryRegExp=<RegExp>]
                              [--abbrRegExp=<RegExp>]
@@ -29,13 +29,12 @@ Measure the coverage of words/phrases in the given material against the given so
     please use '--sentenceSeparator', '--clauseRegExp', '--wordRegExp',
     '--wordBoundaryRegExp', and/or '--abbrRegExp' to override.
     Default: 'en' (English)
--d, --display-details
-    Show more information about the results, such as the list of
-    uncovered words/phrases, suggestions to improve the coverage, etc.
---display-lemmas
-    Show lemmas of phrases in the suggestions discribed above.
-    This option is separated from '--display-details'
-    because it is extremely slow when trying to display lemmas of English using TreeTagger :/
+-d, --show-details
+    Show additional information such as the list of uncovered words/phrases.
+--show-lemma
+    Show lemmas of each phrase when a phrase and its lemma are different each other.
+    This option helps you to detect phrases registered as non-lemma form,
+    which may not be able to be found by the quiz generator and make the coverage lower.
 --sentenceSeparator=<RegExp>
     Regular expression representing a sentence separator.
 --clauseRegExp=<RegExp>
@@ -61,15 +60,15 @@ export default async function (args) {
       'abbrRegExp',
     ],
     boolean: [
-      'display-details',
-      'display-lemmas',
+      'show-details',
+      'show-lemma',
       'help',
     ],
     alias: {
       m: 'material',
       s: 'sources',
       l: 'lang',
-      d: 'display-details',
+      d: 'show-details',
       h: 'help',
     },
     default: {
@@ -139,7 +138,7 @@ export default async function (args) {
 
   console.log(colors.bold(`Coverage: ${coverage.toFixed(2)}%`));
 
-  if (argv['display-details']) {
+  if (argv['show-details']) {
     console.log(colors.bold('\nUncovered Phrases'));
 
     console.log(`
@@ -153,7 +152,7 @@ Legend: ${'#'.grey} phrase ${'answer'.grey} ${'reference'.green} ${'lemmas'.red}
 - Lemmas of a phrase are shown if they are different from an original phrase,
   which indicates the phrase is shown here because they are stored in natural form
   and not recognizable to the generator.
-  ${'Lemmas are shown only when you run with \'--display-lemmas\' option.'.bold}
+  ${'Lemmas are shown only when you run with \'--show-lemma\' option.'.bold}
 -----
 `);
 
@@ -179,7 +178,7 @@ Legend: ${'#'.grey} phrase ${'answer'.grey} ${'reference'.green} ${'lemmas'.red}
           return ref;
         })(),
         (async () => {
-          if (!argv['display-lemmas']) {
+          if (!argv['show-lemma']) {
             return Promise.resolve('');
           }
 
@@ -193,7 +192,7 @@ Legend: ${'#'.grey} phrase ${'answer'.grey} ${'reference'.green} ${'lemmas'.red}
       message.push(pad(phrase.phrase, 20));
       message.push(pad(colors.grey(phrase.answer), 20));
       message.push(pad(colors.green(reference), 10));
-      message.push(colors.red(lemma));
+      message.push(colors.red(lemma !== phrase.phrase ? lemma : ''));
 
       console.log(message.join(' '));
     })());
