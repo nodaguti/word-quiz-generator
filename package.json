@@ -14,7 +14,7 @@
     "minimist": "^1.2.0",
     "pad": "^1.0.0",
     "progress": "^1.1.8",
-    "shell-quote": "^1.6.0",
+    "shell-quote": "^1.6.1",
     "source-map-support": "^0.4.0",
     "xregexp": "^3.1.1"
   },
