@@ -2,20 +2,27 @@ sudo: false
 language: java
 jdk:
   - oraclejdk8
+cache: yarn
 env:
   global:
     - secure: io5woqNiPeOlqVArkmWa8qDFxYfFgSRtQxuAER+a8x8KQk7Gle7/kdg8dq4JBiqzL38JrT2Q+ofqHvxigdJPByl2dWcuSI8gE2JPqS3FfOVithYWmZS11DMQFXC58H7S4wXsHwFzUEAy06jzQwGRA3BXkSD4SNiknDG0FmAyM1tJsR7iCIAsH3zoS+ZpS+tSn9M1qwObLQYhNURFWCcttqOddhw7pbFalcpEfzvDuf258eiSdQUxzucJBJ9MDwTT9nncqRA/fiq5/K3CTvtI4xU/H1xPasqJBXRwDqPm/QvaNKYkiIhk0aymnLejgDk+mz/8WPAFb6IPCrvx2kU2DRdNdfELKCTNY2i56ACPpzIoXkzpTMB3OxObt93zX+U/ldbmEXWAu9NByxJ5Q8BM4iCmG4yRJTa3evFmbYauJUaudFlnPGjtw9hsfwFblmdbcgyJ4mgENYSN3ebJb2Hytj316PLsSYH9mrB/Wi/qvEB+nR2Qy94zwGo76QuEWeO5vvn35rTFvGWkj1VPwo+Hs2GC3xm0kKx047l7ELQVSGCnwfDAbXb/QbSaX0+LbqIyGC5MXVfeSStihxNpFcpcaiRjkW7yTZvTHZduUa/jq/mdEAceXxQm7N6soQkOI1jlW3TOYYu+/6x3KXHzjFhtdVXygiwN6x2DEBDkcekyCb4=
     - NODE_VERSION=7
     - CC=clang
     - CXX=clang++
-install:
+before_install:
+  # Node.js
   - nvm install $NODE_VERSION > /dev/null 2>&1
-  - npm install
+  # Yarn
+  - curl -o- -L https://yarnpkg.com/install.sh | bash
+  - export PATH=$HOME/.yarn/bin:$PATH
+install:
+  - yarn install
+  - yarn run build
   - node lib/cli.js install --no-progressbar coreNLP MeCab
 script:
-  - npm test
+  - yarn test
 after_success:
-  - "$(npm bin)/coveralls < ./coverage/lcov.info"
+  - "$(yarn bin)/coveralls < ./coverage/lcov.info"
 notifications:
   slack:
     secure: ufUqs6gfkMaKG/rNVQMzzYlvPS6n78oyvvSR0Y6Z9HaVsxnk2F5O1OM3M4IN0N4GxsbCToTuA8t64Dc6Qwx+t3ScmjqyWlxUrIzh3vkX41GoT4DK68IL4sCwQGR9ODtgoQetiXoEuZIvlFjMA2hVwWTku+nDXPN8kuN00n67NwzxWVDomRkwFRgqSPcoFxg2Dq+V909wBAZMU3nhyhoaMygkFRPnsHtyWhDAWbbznQQ/adlLnnGgK0Q3+qcCwvKtMt/lPq1utI7DUxxebA7auFSuunwou+iCMBVFUCbQUeupGnhfMnkyZh9a2V3ny3ixJtbgJKwdVMu8aE/2k0wLAHtnZOUWnsbbrruJr01IE9Gg9NLHScPQHjd89iq2CWYSdGrEwcGlztbwuYWu5qjzwF8R0xfPkYFa4+xq9TQpQ2ilrYkwKJ1j2hb7GS34DGcbRylOAMGMIFcYcneAVox2zy2tR5BSwkJflL5a2Ei1AIrtdx+930kDa7XLl181ueYLlbwbRg7ksOzET07wavdQNhxwyLUPBP49PH+0aM0Z+z/mHYJJHX5/RNXalhd7PGw4vHxVDsCVCit0SjifAO1xHgTwWUCD7qroZAC4qPe1rcHA334f9JfHCh/c9ULu8V7NTM5nVV2R+qi5/hsa5vP6BmHb2RLAS9utPHU/4CGs9t0=
