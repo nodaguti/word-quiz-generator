@@ -11,6 +11,7 @@ env:
 install:
   - nvm install $NODE_VERSION > /dev/null 2>&1
   - npm install
+  - npm run build
   - node lib/cli.js install --no-progressbar coreNLP MeCab
 script:
   - npm test
