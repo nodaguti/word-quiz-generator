@@ -1,15 +1,23 @@
-sudo: false
+sudo: true
 language: java
 jdk:
   - oraclejdk8
+cache: yarn
 env:
   global:
     - secure: io5woqNiPeOlqVArkmWa8qDFxYfFgSRtQxuAER+a8x8KQk7Gle7/kdg8dq4JBiqzL38JrT2Q+ofqHvxigdJPByl2dWcuSI8gE2JPqS3FfOVithYWmZS11DMQFXC58H7S4wXsHwFzUEAy06jzQwGRA3BXkSD4SNiknDG0FmAyM1tJsR7iCIAsH3zoS+ZpS+tSn9M1qwObLQYhNURFWCcttqOddhw7pbFalcpEfzvDuf258eiSdQUxzucJBJ9MDwTT9nncqRA/fiq5/K3CTvtI4xU/H1xPasqJBXRwDqPm/QvaNKYkiIhk0aymnLejgDk+mz/8WPAFb6IPCrvx2kU2DRdNdfELKCTNY2i56ACPpzIoXkzpTMB3OxObt93zX+U/ldbmEXWAu9NByxJ5Q8BM4iCmG4yRJTa3evFmbYauJUaudFlnPGjtw9hsfwFblmdbcgyJ4mgENYSN3ebJb2Hytj316PLsSYH9mrB/Wi/qvEB+nR2Qy94zwGo76QuEWeO5vvn35rTFvGWkj1VPwo+Hs2GC3xm0kKx047l7ELQVSGCnwfDAbXb/QbSaX0+LbqIyGC5MXVfeSStihxNpFcpcaiRjkW7yTZvTHZduUa/jq/mdEAceXxQm7N6soQkOI1jlW3TOYYu+/6x3KXHzjFhtdVXygiwN6x2DEBDkcekyCb4=
     - NODE_VERSION=7
     - CC=clang
     - CXX=clang++
-install:
+before_install:
+  # Node.js
   - nvm install $NODE_VERSION > /dev/null 2>&1
+  # Yarn
+  - sudo apt-key adv --keyserver pgp.mit.edu --recv D101F7899D41F3C3
+  - echo "deb http://dl.yarnpkg.com/debian/ stable main" | sudo tee /etc/apt/sources.list.d/yarn.list
+  - sudo apt-get update -qq
+  - sudo apt-get install -y -qq yarn
+install:
   - yarn install
   - yarn run build
   - node lib/cli.js install --no-progressbar coreNLP MeCab
