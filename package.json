@@ -19,7 +19,7 @@
     "xregexp": "^3.1.1"
   },
   "devDependencies": {
-    "babel-cli": "^6.6.5",
+    "babel-cli": "^6.24.1",
     "babel-core": "^6.7.4",
     "babel-plugin-transform-async-to-generator": "^6.7.4",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
