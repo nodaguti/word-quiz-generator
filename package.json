@@ -15,7 +15,7 @@
     "pad": "^1.0.0",
     "progress": "^2.0.0",
     "shell-quote": "^1.6.1",
-    "source-map-support": "^0.4.0",
+    "source-map-support": "^0.4.15",
     "xregexp": "^3.1.1"
   },
   "devDependencies": {
